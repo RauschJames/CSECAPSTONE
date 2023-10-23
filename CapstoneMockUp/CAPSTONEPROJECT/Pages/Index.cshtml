@@ -1,0 +1,165 @@
+﻿
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+@{
+    Layout = null; 
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Service Explorer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            max-width: 800px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .service-instance {
+            padding: 20px;
+            background-color: #f8f8f8;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background-color: #fff;
+            padding: 20px;
+            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .toolbar {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: #007bff;
+            font-size: 24px;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 40px;
+            right: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .dropdown-item {
+            padding: 10px;
+            text-align: right;
+            text-decoration: none;
+            display: block;
+            color: #000;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="toolbar" id="toolbar">
+        &#9881; 
+    </div>
+    
+    <div class="service-grid" id="serviceGrid">
+       
+    </div>
+
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <h2>Server Information</h2>
+            <p><strong>Server Location:</strong> Randomly generated</p>
+            <p><strong>Server Uptime:</strong> Randomly generated</p>
+            <p><strong>Server User:</strong> Randomly generated</p>
+            <p><strong>Storage Space:</strong> Randomly generated</p>
+            <a href="#" id="serverContentsLink">Server Contents</a>
+            <button id="closePopup">Close</button>
+        </div>
+    </div>
+
+    <div class="dropdown" id="dropdown">
+        <a class="dropdown-item" href="settings.html">Settings</a>
+        <a class="dropdown-item" href="logout.html">Logout</a>
+    </div>
+
+    <script>
+        
+        const serviceGrid = document.getElementById("serviceGrid");
+
+        for (let i = 1; i <= 50; i++) {
+            const bucketName = `example-bucket-${Math.floor(Math.random() * 100)}`;
+            const serviceInstance = document.createElement("div");
+            serviceInstance.className = "service-instance";
+            serviceInstance.textContent = bucketName;
+            serviceInstance.addEventListener("click", () => showPopup(bucketName));
+            serviceGrid.appendChild(serviceInstance);
+        }
+
+        const popup = document.getElementById("popup");
+        const closePopupButton = document.getElementById("closePopup");
+        const serverContentsLink = document.getElementById("serverContentsLink");
+        const toolbar = document.getElementById("toolbar");
+        const dropdown = document.getElementById("dropdown");
+
+        closePopupButton.addEventListener("click", hidePopup);
+        serverContentsLink.addEventListener("click", () => {
+            
+        });
+
+        toolbar.addEventListener("click", toggleDropdown);
+
+        function showPopup(bucketName) {
+            popup.style.display = "flex";
+        }
+
+        function hidePopup() {
+            popup.style.display = "none";
+        }
+
+        function toggleDropdown() {
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        }
+    </script>
+</body>
+</html>
