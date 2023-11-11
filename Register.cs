@@ -1,4 +1,4 @@
-<commment> James Rausch </comment>
+ <!-- James Rausch and Alexander Rotteveel -->
 <html lang="en">
 
 <head>
