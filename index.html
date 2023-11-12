@@ -106,6 +106,7 @@
         <div class="popup-content">
             <h2>Server Information</h2>
             <p id="serverInfo">Loading...</p>
+           <a href="#" id="ServiceContext">Server Contents</a>
             <button id="closePopup">Close</button>
         </div>
     </div>
@@ -150,6 +151,7 @@
                 <strong>ARN:</strong> ${server.ARN} <br>
                 <strong>Region:</strong> ${server.REGION}
             `;
+            
         }
 
         const serviceGrid = document.getElementById("serviceGrid");
