@@ -1,11 +1,11 @@
 <!-- James Rausch -->
 <!DOCTYPE html>
 <html lang="en">
-<head> <!-- Styling, Script , ARN,Basic Body Etc all done by James -->
+<head> <!-- James Rausch -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AWS Service Explorer</title>
-    <style>
+    <style><!-- James Rausch -->
        <style>
         body {
             font-family: Arial, sans-serif;
@@ -94,7 +94,7 @@
 <body>
 
     <div class="toolbar" id="toolbar">
-        &#9881; 
+        &#9881; <!-- James Rausch -->
     </div>
     
     <div class="service-grid" id="serviceGrid">
@@ -114,7 +114,7 @@
         <a class="dropdown-item" href="logout.html">Logout</a>
     </div>
 
-    <script>
+    <script><!-- James Rausch -->
         // Function to fetch server data from your API
         function fetchServerData() {
             fetch('https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers')
@@ -127,7 +127,7 @@
         }
 
         // Function to display each server as a grid item
-        function displayServers(servers) {
+        function displayServers(servers) {<!-- James Rausch -->
             servers.forEach(server => {
                 const serviceInstance = document.createElement("div");
                 serviceInstance.className = "service-instance";
@@ -138,7 +138,7 @@
         }
 
         // Adjusted function to show popup with server details
-        function showPopup(server) {
+        function showPopup(server) {<!-- James Rausch -->
             const popupContent = document.getElementById("popup");
             const serverInfo = document.getElementById("serverInfo");
             popupContent.style.display = "flex";
