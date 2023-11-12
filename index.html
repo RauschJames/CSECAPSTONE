@@ -1,111 +1,15 @@
- <!-- James Rausch and Alexander Rotteveel -->
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWS Service Explorer</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f2f2f2;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .service-grid {
-            display: grid;
-            grid-template-columns: repeat(5, 1fr);
-            gap: 20px;
-            max-width: 800px;
-            padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-        }
-
-        .service-instance {
-            padding: 20px;
-            background-color: #f8f8f8;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: none;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .popup-content {
-            background-color: #fff;
-            padding: 20px;
-            max-width: 400px;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .toolbar {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            cursor: pointer;
-            color: #007bff;
-            font-size: 24px;
-        }
-
-        .dropdown {
-            position: absolute;
-            top: 40px;
-            right: 10px;
-            background-color: #fff;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            display: none;
-        }
-
-        .dropdown-item {
-            padding: 10px;
-            text-align: right;
-            text-decoration: none;
-            display: block;
-            color: #000;
-        }
-
-        .dropdown-item:hover {
-            background-color: #f0f0f0;
-        }
-    </style>
-</head>
-<body>
-    <div class="toolbar" id="toolbar">
+ <div class="toolbar" id="toolbar">
         &#9881; 
     </div>
     
     <div class="service-grid" id="serviceGrid">
-       
+       <!-- Server instances will be added here -->
     </div>
 
     <div class="popup" id="popup">
         <div class="popup-content">
             <h2>Server Information</h2>
-            <p><strong>Server Location:</strong> Randomly generated</p>
-            <p><strong>Server Uptime:</strong> Randomly generated</p>
-            <p><strong>Server User:</strong> Randomly generated</p>
-            <p><strong>Storage Space:</strong> Randomly generated</p>
-            <a href="#" id="serverContentsLink">Server Contents</a>
+            <p id="serverInfo">Loading...</p>
             <button id="closePopup">Close</button>
         </div>
     </div>
@@ -139,11 +43,29 @@
 
         // Adjusted function to show popup with server details
         function showPopup(server) {
-            popup.style.display = "flex";
-            document.querySelector('.popup-content h2').textContent = `Server: ${server.BucketName}`;
-            // Adjust these lines to display the actual server details
-            // For now, I'm just displaying the ARN
-            document.querySelector('.popup-content p').textContent = `ARN: ${server.ARN}`;
+            const popupContent = document.getElementById("popup");
+            const serverInfo = document.getElementById("serverInfo");
+            popupContent.style.display = "flex";
+            serverInfo.innerHTML = `
+                <strong>Bucket Name:</strong> ${server.BucketName}<br>
+                <strong>ARN:</strong> ${server.ARN}
+            `;
         }
-</body>
-</html>
+
+        const serviceGrid = document.getElementById("serviceGrid");
+        const popup = document.getElementById("popup");
+        const closePopupButton = document.getElementById("closePopup");
+        const toolbar = document.getElementById("toolbar");
+        const dropdown = document.getElementById("dropdown");
+
+        closePopupButton.addEventListener("click", () => {
+            popup.style.display = "none";
+        });
+
+        toolbar.addEventListener("click", () => {
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        });
+
+        // Call the function to fetch server data when the script loads
+        fetchServerData();
+    </script>
