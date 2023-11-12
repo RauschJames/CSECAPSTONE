@@ -22,7 +22,8 @@
             display: grid;
             grid-template-columns: repeat(5, 1fr);
             gap: 20px;
-            max-width: 800px;
+            max-width: 100%;
+            margin: auto;
             padding: 20px;
             background-color: #fff;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -112,9 +113,11 @@
     <div class="dropdown" id="dropdown">
         <a class="dropdown-item" href="settings.html">Settings</a>
         <a class="dropdown-item" href="logout.html">Logout</a>
+
     </div>
 
-    <script><!-- James Rausch -->
+    
+    <script>
         // Function to fetch server data from your API
         function fetchServerData() {
             fetch('https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers')
@@ -127,7 +130,7 @@
         }
 
         // Function to display each server as a grid item
-        function displayServers(servers) {<!-- James Rausch -->
+        function displayServers(servers) {
             servers.forEach(server => {
                 const serviceInstance = document.createElement("div");
                 serviceInstance.className = "service-instance";
@@ -138,7 +141,7 @@
         }
 
         // Adjusted function to show popup with server details
-        function showPopup(server) {<!-- James Rausch -->
+        function showPopup(server) {
             const popupContent = document.getElementById("popup");
             const serverInfo = document.getElementById("serverInfo");
             popupContent.style.display = "flex";
