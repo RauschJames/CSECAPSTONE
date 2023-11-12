@@ -116,42 +116,34 @@
     </div>
 
     <script>
-        
-        const serviceGrid = document.getElementById("serviceGrid");
-
-        for (let i = 1; i <= 50; i++) {
-            const bucketName = `example-bucket-${Math.floor(Math.random() * 100)}`;
-            const serviceInstance = document.createElement("div");
-            serviceInstance.className = "service-instance";
-            serviceInstance.textContent = bucketName;
-            serviceInstance.addEventListener("click", () => showPopup(bucketName));
-            serviceGrid.appendChild(serviceInstance);
+        // Function to fetch server data from your API
+        function fetchServerData() {
+            fetch('https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers')
+                .then(response => response.json())
+                .then(data => {
+                    displayServers(data);
+                })
+                .catch(error => console.error('Error:', error));
         }
 
-        const popup = document.getElementById("popup");
-        const closePopupButton = document.getElementById("closePopup");
-        const serverContentsLink = document.getElementById("serverContentsLink");
-        const toolbar = document.getElementById("toolbar");
-        const dropdown = document.getElementById("dropdown");
+        // Function to display each server as a grid item
+        function displayServers(servers) {
+            servers.forEach(server => {
+                const serviceInstance = document.createElement("div");
+                serviceInstance.className = "service-instance";
+                serviceInstance.textContent = server.BucketName;
+                serviceInstance.addEventListener("click", () => showPopup(server));
+                serviceGrid.appendChild(serviceInstance);
+            });
+        }
 
-        closePopupButton.addEventListener("click", hidePopup);
-        serverContentsLink.addEventListener("click", () => {
-            
-        });
-
-        toolbar.addEventListener("click", toggleDropdown);
-
-        function showPopup(bucketName) {
+        // Adjusted function to show popup with server details
+        function showPopup(server) {
             popup.style.display = "flex";
+            document.querySelector('.popup-content h2').textContent = `Server: ${server.BucketName}`;
+            // Adjust these lines to display the actual server details
+            // For now, I'm just displaying the ARN
+            document.querySelector('.popup-content p').textContent = `ARN: ${server.ARN}`;
         }
-
-        function hidePopup() {
-            popup.style.display = "none";
-        }
-
-        function toggleDropdown() {
-            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
-        }
-    </script>
 </body>
 </html>
