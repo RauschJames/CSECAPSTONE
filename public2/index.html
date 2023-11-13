@@ -1,0 +1,71 @@
+ <div class="toolbar" id="toolbar">
+        &#9881; 
+    </div>
+    
+    <div class="service-grid" id="serviceGrid">
+       <!-- Server instances will be added here -->
+    </div>
+
+    <div class="popup" id="popup">
+        <div class="popup-content">
+            <h2>Server Information</h2>
+            <p id="serverInfo">Loading...</p>
+            <button id="closePopup">Close</button>
+        </div>
+    </div>
+
+    <div class="dropdown" id="dropdown">
+        <a class="dropdown-item" href="settings.html">Settings</a>
+        <a class="dropdown-item" href="logout.html">Logout</a>
+    </div>
+
+    <script>
+        // Function to fetch server data from your API
+        function fetchServerData() {
+            fetch('https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers')
+                .then(response => response.json())
+                .then(data => {
+                    displayServers(data);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        // Function to display each server as a grid item
+        function displayServers(servers) {
+            servers.forEach(server => {
+                const serviceInstance = document.createElement("div");
+                serviceInstance.className = "service-instance";
+                serviceInstance.textContent = server.BucketName;
+                serviceInstance.addEventListener("click", () => showPopup(server));
+                serviceGrid.appendChild(serviceInstance);
+            });
+        }
+
+        // Adjusted function to show popup with server details
+        function showPopup(server) {
+            const popupContent = document.getElementById("popup");
+            const serverInfo = document.getElementById("serverInfo");
+            popupContent.style.display = "flex";
+            serverInfo.innerHTML = `
+                <strong>Bucket Name:</strong> ${server.BucketName}<br>
+                <strong>ARN:</strong> ${server.ARN}
+            `;
+        }
+
+        const serviceGrid = document.getElementById("serviceGrid");
+        const popup = document.getElementById("popup");
+        const closePopupButton = document.getElementById("closePopup");
+        const toolbar = document.getElementById("toolbar");
+        const dropdown = document.getElementById("dropdown");
+
+        closePopupButton.addEventListener("click", () => {
+            popup.style.display = "none";
+        });
+
+        toolbar.addEventListener("click", () => {
+            dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+        });
+
+        // Call the function to fetch server data when the script loads
+        fetchServerData();
+    </script>
