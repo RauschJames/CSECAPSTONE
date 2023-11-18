@@ -157,7 +157,7 @@
             if (region === 'all') {
                 displayServers(data);
             } else {
-                const filteredData = data.filter(server => server.Region === region);
+                const filteredData = data.filter(server => server.REGION === region);
                 displayServers(filteredData);
             }
         })
