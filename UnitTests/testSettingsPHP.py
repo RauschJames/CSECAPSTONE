@@ -40,8 +40,6 @@ def setup_and_teardown():
     # Setup the test environment, if necessary
     conn = pymssql.connect(DB_SERVER, DB_USER, DB_PASSWORD, DB_NAME)
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO mock_Accounts (username, hometown, gender, password) VALUES ('TestUser', 'OldTown', 'female', 'OldPass')")
-    conn.commit()
     conn.close()
 
     yield
@@ -49,6 +47,5 @@ def setup_and_teardown():
     # Teardown the test environment
     conn = pymssql.connect(DB_SERVER, DB_USER, DB_PASSWORD, DB_NAME)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM mock_Accounts WHERE username = 'TestUser'")
     conn.commit()
     conn.close()
