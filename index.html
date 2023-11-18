@@ -183,7 +183,8 @@
         console.log('Bucket deleted:', data);
         document.location.reload(true);
     })
-    .catch(error => console.error('Error:', error));
+    .catch(error => {console.error('Error:', error)
+         document.location.reload(true);});
     }
 
 
