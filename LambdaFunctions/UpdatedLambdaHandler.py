@@ -1,6 +1,6 @@
 import boto3
 import json
-
+#Unused JR
 # Create an S3 client
 s3_client = boto3.client('s3')
 
