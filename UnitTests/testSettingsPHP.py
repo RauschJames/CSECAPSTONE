@@ -7,7 +7,7 @@ FORM_URL = "https://main.dzyoo64rgfqyj.amplifyapp.com/updateSettings.php"  # URL
 DB_SERVER = '"mocked-db.cailplyo9oeg.us-east-1.rds.amazonaws.com'
 DB_USER = 'admin'
 DB_PASSWORD = 'admin123'
-DB_NAME = 'mockAccounts'
+DB_NAME = 'mock_Accounts'
 
 def test_form_submission():
     """Test form submission to the PHP script."""
