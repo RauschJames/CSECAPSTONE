@@ -249,9 +249,10 @@
                 console.log("Server added:", data);
                 // Close the popup and refresh server list
                 document.getElementById('addServerPopup').style.display = 'none';
-                fetchServerData(); // Assuming this function refreshes the server list
+                document.location.reload(true);
+    
             })
-            .catch(error => console.error('Error:', error));
+            .catch(error => {console.error('Error:', error), document.location.reload(true)});
     } else {
         alert("Server name must be lowercase and less than 64 characters.");
     }
