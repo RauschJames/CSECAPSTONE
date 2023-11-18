@@ -174,14 +174,21 @@
 
        function deleteBucket(bucketName) {
            const endpoint = 'https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers/delete';
-           fetch(`${endpoint}?bucketName=${bucketName}`)
-            .then(response => response.json())
-            .then(data => {
-           console.log('Bucket deleted:', data);
+          
+          fetch(`${endpoint}?bucketName=${encodeURIComponent(bucketName)}`, {
+        method: 'POST', // Set the method to POST
+        headers: {
+            'Content-Type': 'application/json', // Optional if you are not sending a JSON body
+        }
+        // No body is needed since the data is sent as a query parameter
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Bucket deleted:', data);
         // Refresh the server list or provide UI feedback
-            fetchServerData();
-        })
-        .catch(error => console.error('Error:', error));
+        fetchServerData(); // Make sure this function is defined and does what is expected
+    })
+    .catch(error => console.error('Error:', error));
     }
 
 // Function to display each server as a grid item
