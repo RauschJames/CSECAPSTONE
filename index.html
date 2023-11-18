@@ -181,13 +181,13 @@
     .then(response => response.json())
     .then(data => {
         console.log('Bucket deleted:', data);
-        // Refresh the server list or provide UI feedback
-        fetchServerData(); // Make sure this function is defined and does what is expected
+        
+        fetchServerData();
     })
     .catch(error => console.error('Error:', error));
     }
 
-// Function to display each server as a grid item
+
     function displayServers(servers) {
         servers.forEach(server => {
             const serviceInstance = document.createElement("div");
