@@ -89,6 +89,16 @@
         .dropdown-item:hover {
             background-color: #f0f0f0;
         }
+        .add-server-popup {
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+.add-server-popup .popup-content {
+    margin-top: 10px;
+}
     </style>
     </style>
 </head>
@@ -97,6 +107,7 @@
     <div class="toolbar" id="toolbar">
         &#9881; <!-- James Rausch -->
     </div>
+    
     <!-- James Rausch -->
     <div class="service-grid" id="serviceGrid">
        <!-- Server instances will be added here -->
@@ -119,6 +130,16 @@
         <a class="dropdown-item" href="settings.html">Settings</a>
         <a class="dropdown-item" href="logout.html">Logout</a>
 
+    </div>
+    <button id="addServerButton">Add Server</button>
+
+    <div class="add-server-popup" id="addServerPopup" style="display:none; position: fixed; right: 10px; bottom: 10px;">
+    <div class="popup-content">
+        <h2>Add Server</h2>
+        <input type="text" id="serverNameInput" placeholder="Enter server name" maxlength="64" pattern="[a-z]*">
+        <button id="submitServerName">Add</button>
+        <button id="closeAddServerPopup">Close</button>
+    </div>
     </div>
 
     <div class="region-selector"> 
