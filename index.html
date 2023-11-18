@@ -241,7 +241,7 @@
     const serverName = document.getElementById('serverNameInput').value;
 
     // Check if server name is in lowercase and less than 64 characters
-    if (serverName.match(/^[a-z]{1,64}$/)) {
+    if (serverName.match(/^[a-z]{1,64}$/)) { //regex to check if a-z and under 64 characters.
         // Send server name to the endpoint
         fetch(`https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers/add?bucketName=${serverName}`)
             .then(response => response.json())
