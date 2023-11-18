@@ -197,7 +197,7 @@
             const deleteButton = document.createElement("button");
             deleteButton.id = "deleteBucket";
             deleteButton.textContent = "Delete Bucket";
-            deleteButton.onclick = () => deleteBucket(server.BucketName) =>  document.location.reload();
+            deleteButton.onclick = () => deleteBucket(server.BucketName);
             serviceInstance.appendChild(deleteButton);
             
             serviceInstance.addEventListener("click", () => showPopup(server));
