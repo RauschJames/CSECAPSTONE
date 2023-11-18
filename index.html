@@ -171,17 +171,41 @@
         fetchServerData(selectedRegion);
     });
 
-        // Function to display each server as a grid item
-        function displayServers(servers) {
-            servers.forEach(server => {
-                const serviceInstance = document.createElement("div");
-                serviceInstance.className = "service-instance";
-                serviceInstance.textContent = server.BucketName;
-                serviceInstance.addEventListener("click", () => showPopup(server));
-                serviceGrid.appendChild(serviceInstance);
-            });
-        }
 
+       function deleteBucket(bucketName) {
+           const endpoint = 'https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/deleteBucket';
+           fetch(`${endpoint}?bucketName=${bucketName}`, {
+                method: 'DELETE', // Assuming your API uses the DELETE method
+            })
+            .then(response => response.json())
+            .then(data => {
+           console.log('Bucket deleted:', data);
+        // Refresh the server list or provide UI feedback
+            fetchServerData();
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+// Function to display each server as a grid item
+    function displayServers(servers) {
+        servers.forEach(server => {
+            const serviceInstance = document.createElement("div");
+            serviceInstance.className = "service-instance";
+            serviceInstance.textContent = server.BucketName;
+
+        // Create delete button for each server
+            const deleteButton = document.createElement("button");
+            deleteButton.id = "deleteBucket";
+            deleteButton.textContent = "Delete Bucket";
+            deleteButton.onclick = () => deleteBucket(server.BucketName);
+            serviceInstance.appendChild(deleteButton);
+
+            serviceInstance.addEventListener("click", () => showPopup(server));
+            serviceGrid.appendChild(serviceInstance);
+        });
+}
+
+        
         // Adjusted function to show popup with server details
         function showPopup(server) {
             const popupContent = document.getElementById("popup");
