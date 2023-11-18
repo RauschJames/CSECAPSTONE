@@ -4,10 +4,10 @@ import pymssql
 
 # Constants
 FORM_URL = "https://main.dzyoo64rgfqyj.amplifyapp.com/updateSettings.php"  # URL where the form submits
-DB_SERVER = '"mocked-db.cailplyo9oeg.us-east-1.rds.amazonaws.com'
+DB_SERVER = 'mocked-db.cailplyo9oeg.us-east-1.rds.amazonaws.com'
 DB_USER = 'admin'
 DB_PASSWORD = 'admin123'
-DB_NAME = 'mock_Accounts'
+DB_NAME = 'mockAccounts'
 
 def test_form_submission():
     """Test form submission to the PHP script."""
@@ -25,7 +25,7 @@ def test_database_update():
     """Test if the database is updated correctly."""
     conn = pymssql.connect(DB_SERVER, DB_USER, DB_PASSWORD, DB_NAME)
     cursor = conn.cursor()
-    cursor.execute("SELECT hometown, gender, password FROM users WHERE username = 'TestUser'")
+    cursor.execute("SELECT hometown, gender, password FROM mock_Accounts WHERE username = 'TestUser'")
     result = cursor.fetchone()
     conn.close()
 
@@ -38,19 +38,17 @@ def test_database_update():
 def setup_and_teardown():
     """Setup and teardown for the tests."""
     # Setup the test environment, if necessary
-    # For example, creating a test user in the database
     conn = pymssql.connect(DB_SERVER, DB_USER, DB_PASSWORD, DB_NAME)
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO users (username, hometown, gender, password) VALUES ('TestUser', 'OldTown', 'female', 'OldPass')")
+    cursor.execute("INSERT INTO mock_Accounts (username, hometown, gender, password) VALUES ('TestUser', 'OldTown', 'female', 'OldPass')")
     conn.commit()
     conn.close()
 
     yield
 
     # Teardown the test environment
-    # For example, removing the test user from the database
     conn = pymssql.connect(DB_SERVER, DB_USER, DB_PASSWORD, DB_NAME)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM users WHERE username = 'TestUser'")
+    cursor.execute("DELETE FROM mock_Accounts WHERE username = 'TestUser'")
     conn.commit()
     conn.close()
