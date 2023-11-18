@@ -4,7 +4,7 @@ import json
 
 def lambda_handler(event, context):
     # Extracting the bucket name from the query parameters
-    bucket_name = event['queryStringParameters']['bucket_name']
+    bucket_name = event['queryStringParameters']['bucketName']
 
     # Create an S3 client
     s3 = boto3.client('s3')
