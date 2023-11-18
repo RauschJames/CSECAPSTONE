@@ -1,1 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Settings Page</title>
+    <!--James Rausch -->
+</head>
+<body>
+    <div class="menu">
+        <a href="index.html">Home</a>
+        <a href="logout.html">Logout</a>
+    </div>
+
+    <h1>Settings</h1>
+
+    <form action="updateSettings.php" method="post">
+        <label for="hometown">Hometown:</label>
+        <input type="text" id="hometown" name="hometown">
+
+        <label for="gender">Gender:</label>
+        <select id="gender" name="gender">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+        </select>
+        <input type="text" id="customGender" name="customGender" placeholder="Enter your gender">
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password">
+
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username">
+
+        <button type="submit">Save Changes</button>
+    </form>
+</body>
+</html>
 
