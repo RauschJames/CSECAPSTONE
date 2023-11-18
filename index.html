@@ -174,9 +174,7 @@
 
        function deleteBucket(bucketName) {
            const endpoint = 'https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers/delete';
-           fetch(`${endpoint}?bucketName=${bucketName}`, {
-                method: 'ANY', 
-            })
+           fetch(`${endpoint}?bucketName=${bucketName}`)
             .then(response => response.json())
             .then(data => {
            console.log('Bucket deleted:', data);
