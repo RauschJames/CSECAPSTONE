@@ -1,8 +1,8 @@
 <?php
     // Database credentials
-    $serverName = "mocked-db.cailplyo9oeg.us-east-1.rds.amazonaws.com"; // WE USE A MOCKED INSTANCE THIS WILL BE SALTED AND PREVIOUS CREDS THROWN OUT
+    $serverName = "mocked-db.cailplyo9oeg.us-east-1.rds.amazonaws.com"; // Mocked instance
     $connectionOptions = array(
-        "Database" => "mockAccounts",
+        "Database" => "Accounts",
         "Uid" => "admin",
         "PWD" => "admin123"
     );
@@ -21,8 +21,8 @@
     $password = $_POST['password']; // Remember to hash passwords before storing
     $username = $_POST['username'];
 
-    // Update query
-    $sql = "UPDATE users SET hometown=?, gender=?, password=? WHERE username=?";
+    // Update query for mock_Accounts table
+    $sql = "UPDATE mock_Accounts SET hometown=?, gender=?, password=? WHERE username=?";
     $params = array($hometown, $gender, $password, $username);
 
     // Prepare and execute query
