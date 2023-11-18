@@ -32,7 +32,7 @@ def test_database_update():
     assert result is not None
     assert result[0] == 'TestTown'
     assert result[1] == 'male'
-    # Password checks should be done here, but it depends on how you store them (e.g., hashing)
+
 
 @pytest.fixture(scope="module", autouse=True)
 def setup_and_teardown():
