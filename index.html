@@ -177,11 +177,7 @@
           
           fetch(`${endpoint}?bucketName=${encodeURIComponent(bucketName)}`, {
         method: 'POST', // Set the method to POST
-        headers: {
-            'Content-Type': 'application/json', // Optional if you are not sending a JSON body
-        }
-        // No body is needed since the data is sent as a query parameter
-    })
+        })
     .then(response => response.json())
     .then(data => {
         console.log('Bucket deleted:', data);
