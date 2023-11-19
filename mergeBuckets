@@ -1,0 +1,25 @@
+import boto3
+
+def lambda_handler(event, context):
+    
+    source_bucket = event['source_bucket']
+    destination_bucket = event['destination_bucket']
+
+    
+    s3_client = boto3.client('s3')
+
+   
+    response = s3_client.list_objects_v2(Bucket=source_bucket)
+
+   
+    for obj in response.get('Contents', []):
+        copy_source = {'Bucket': source_bucket, 'Key': obj['Key']}
+        destination_key = obj['Key']
+
+       
+        s3_client.copy_object(CopySource=copy_source, Bucket=destination_bucket, Key=destination_key)
+
+    return {
+        'statusCode': 200,
+        'body': f"Objects from {source_bucket} copied to {destination_bucket}"
+    }
