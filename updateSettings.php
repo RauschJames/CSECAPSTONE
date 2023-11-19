@@ -1,3 +1,4 @@
+//James Rausch
 <?php
     // Database credentials
     $serverName = "mocked-db.cailplyo9oeg.us-east-1.rds.amazonaws.com"; // Mocked instance
