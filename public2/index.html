@@ -1,46 +1,264 @@
- <div class="toolbar" id="toolbar">
-        &#9881; 
+<!-- James Rausch -->
+<!DOCTYPE html>
+<html lang="en">
+<head> <!-- James Rausch -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Service Explorer</title>
+    <style>
+       
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 20px;
+            max-width: 100%;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .service-instance {
+            padding: 20px;
+            background-color: #f8f8f8;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background-color: #fff;
+            padding: 20px;
+            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .toolbar {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: #007bff;
+            font-size: 24px;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 40px;
+            right: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .dropdown-item {
+            padding: 10px;
+            text-align: right;
+            text-decoration: none;
+            display: block;
+            color: #000;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f0f0f0;
+        }
+        .add-server-popup {
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+.add-server-popup .popup-content {
+    margin-top: 10px;
+}
+    </style>
+    </style>
+</head>
+<body>
+    
+    <div class="toolbar" id="toolbar">
+        &#9881; <!-- James Rausch -->
     </div>
     
+    <!-- James Rausch -->
     <div class="service-grid" id="serviceGrid">
        <!-- Server instances will be added here -->
     </div>
 
     <div class="popup" id="popup">
         <div class="popup-content">
+            <!-- James Rausch -->
             <h2>Server Information</h2>
             <p id="serverInfo">Loading...</p>
+           <a href="ServiceContext.html" id="ServiceContext">Server Contents</a>
+    
             <button id="closePopup">Close</button>
+            
         </div>
     </div>
 
     <div class="dropdown" id="dropdown">
+        <!-- James Rausch -->
         <a class="dropdown-item" href="settings.html">Settings</a>
-        <a class="dropdown-item" href="logout.html">Logout</a>
+        <a class="dropdown-item" href="#" onclick="performLogout()">Logout</a>
+
+    </div>
+    <button id="addServerButton">Add Server</button>
+
+    <div class="add-server-popup" id="addServerPopup" style="display:none; position: fixed; right: 10px; bottom: 10px;">
+    <div class="popup-content">
+        <h2>Add Server</h2>
+        <input type="text" id="serverNameInput" placeholder="Enter server name" maxlength="64" pattern="[a-z]*">
+        <button id="submitServerName">Add</button>
+        <button id="closeAddServerPopup">Close</button>
+    </div>
     </div>
 
+    <div class="region-selector"> 
+    <select id="regionDropdown">
+        <option value="all">All Regions</option>
+        <option value="us-east-1">US East (N. Virginia)</option>
+        <option value="eu-west-1">EU (Ireland)</option>
+        <option value="us-east-2">US East (Ohio)</option>
+        <option value="us-west-1">US West (N. California)</option>
+        <option value="us-west-2">US West (Oregon)</option>
+        <option value="af-south-1">Africa (Cape Town)</option>
+        <option value="ap-east-1">Asia Pacific (Hong Kong)</option>
+        <option value="ap-south-1">Asia Pacific (Mumbai)</option>
+        <option value="ap-northeast-3">Asia Pacific (Osaka)</option>
+        <option value="ap-northeast-2">Asia Pacific (Seoul)</option>
+        <option value="ap-southeast-1">Asia Pacific (Singapore)</option>
+        <option value="ap-southeast-2">Asia Pacific (Sydney)</option>
+        <option value="ap-northeast-1">Asia Pacific (Tokyo)</option>
+        <option value="ca-central-1">Canada (Central)</option>
+        <option value="eu-central-1">Europe (Frankfurt)</option>
+        <option value="eu-west-1">EU (Ireland)</option>
+        <option value="eu-west-2">Europe (London)</option>
+        <option value="eu-south-1">Europe (Milan)</option>
+        <option value="eu-west-3">Europe (Paris)</option>
+        <option value="eu-north-1">Europe (Stockholm)</option>
+        <option value="me-south-1">Middle East (Bahrain)</option>
+        <option value="sa-east-1">South America (São Paulo)</option>
+
+ 
+    </select>
+    </div>
     <script>
-        // Function to fetch server data from your API
-        function fetchServerData() {
-            fetch('https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers')
-                .then(response => response.json())
-                .then(data => {
-                    displayServers(data);
-                })
-                .catch(error => console.error('Error:', error));
-        }
+        // Function to fetch server data from API
+       function fetchServerData(region = 'all') {
+        fetch('https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers')
+        .then(response => response.json())
+        .then(data => {
+            if (region === 'all') {
+                displayServers(data);
+            } else {
+                const filteredData = data.filter(server => server.REGION === region);
+                displayServers(filteredData);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+}
+        document.getElementById('regionDropdown').addEventListener('change', function() {
+        const selectedRegion = this.value;
+        serviceGrid.innerHTML = '';
+        fetchServerData(selectedRegion);
+    });
 
-        // Function to display each server as a grid item
-        function displayServers(servers) {
-            servers.forEach(server => {
-                const serviceInstance = document.createElement("div");
-                serviceInstance.className = "service-instance";
-                serviceInstance.textContent = server.BucketName;
-                serviceInstance.addEventListener("click", () => showPopup(server));
-                serviceGrid.appendChild(serviceInstance);
-            });
-        }
 
+       function deleteBucket(bucketName) {
+           const endpoint = 'https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers/delete';
+          
+          fetch(`${endpoint}?bucketName=${(bucketName)}`, {
+        method: 'POST', // Set the method to POST
+        })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Bucket deleted:', data);
+        document.location.reload(true);
+    })
+    .catch(error => {console.error('Error:', error)
+         document.location.reload(true);});
+    }
+
+
+    function displayServers(servers) {
+        servers.forEach(server => {
+            const serviceInstance = document.createElement("div");
+            serviceInstance.className = "service-instance";
+            serviceInstance.textContent = server.BucketName;
+
+        // Create delete button for each server
+            const deleteButton = document.createElement("button");
+            deleteButton.id = "deleteBucket";
+            deleteButton.textContent = "Delete Bucket";
+            deleteButton.onclick = () => deleteBucket(server.BucketName);
+            serviceInstance.appendChild(deleteButton);
+            
+            serviceInstance.addEventListener("click", () => showPopup(server));
+            deleteButton.addEventListener("click",() => {
+                popup.style.display = "none";
+            })
+            serviceGrid.appendChild(serviceInstance);
+        });
+}
+        document.getElementById('addServerButton').addEventListener('click', function() {
+    document.getElementById('addServerPopup').style.display = 'block';
+});
+
+    document.getElementById('closeAddServerPopup').addEventListener('click', function() {
+    document.getElementById('addServerPopup').style.display = 'none';
+    });
+
+    document.getElementById('submitServerName').addEventListener('click', function() {
+    const serverName = document.getElementById('serverNameInput').value;
+
+    // Check if server name is in lowercase and less than 64 characters
+    if (serverName.match(/^[a-z]{1,64}$/)) { //regex to check if a-z and under 64 characters.
+        // Send server name to the endpoint
+        fetch(`https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers/add?bucketName=${serverName}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log("Server added:", data);
+                // Close the popup and refresh server list
+                document.getElementById('addServerPopup').style.display = 'none';
+                document.location.reload(true);
+    
+            })
+            .catch(error => {console.error('Error:', error), document.location.reload(true)});
+    } else {
+        alert("Server name must be lowercase and less than 64 characters.");
+    }
+});
+
+        
         // Adjusted function to show popup with server details
         function showPopup(server) {
             const popupContent = document.getElementById("popup");
@@ -48,10 +266,12 @@
             popupContent.style.display = "flex";
             serverInfo.innerHTML = `
                 <strong>Bucket Name:</strong> ${server.BucketName}<br>
-                <strong>ARN:</strong> ${server.ARN}
+                <strong>ARN:</strong> ${server.ARN} <br>
+                <strong>Region:</strong> ${server.REGION}
             `;
+            
         }
-
+        
         const serviceGrid = document.getElementById("serviceGrid");
         const popup = document.getElementById("popup");
         const closePopupButton = document.getElementById("closePopup");
@@ -66,6 +286,37 @@
             dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
         });
 
-        // Call the function to fetch server data when the script loads
+
         fetchServerData();
-    </script>
+
+        function performLogout() {
+    // Optional: Get the token from the URL if it's present in the query string
+    const queryParams = new URLSearchParams(window.location.search);
+    const token = queryParams.get('token');
+
+    
+    if (token) {
+        fetch('/logout', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
+            },
+            
+            body: JSON.stringify({ currentUrl: window.location.href })
+        })
+        .then(response => {
+            if (response.ok) {
+                window.location.href = '/';
+            } else {
+                console.error('Logout failed');
+            }
+        })
+        .catch(error => {
+            console.error('Error during logout:', error);
+        });
+    } else {
+        console.error('No token found for logout');
+    }
+}
+</script>
