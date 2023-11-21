@@ -124,7 +124,7 @@
             
         </div>
     </div>
-
+      <!-- James Rausch -->
     <div class="dropdown" id="dropdown">
         <!-- James Rausch -->
         <a class="dropdown-item" href="settings.html">Settings</a>
@@ -132,7 +132,7 @@
 
     </div>
     <button id="addServerButton">Add Server</button>
-
+  <!-- James Rausch -->
     <div class="add-server-popup" id="addServerPopup" style="display:none; position: fixed; right: 10px; bottom: 10px;">
     <div class="popup-content">
         <h2>Add Server</h2>
@@ -141,7 +141,7 @@
         <button id="closeAddServerPopup">Close</button>
     </div>
     </div>
-
+  <!-- James Rausch -->
     <div class="region-selector"> 
     <select id="regionDropdown">
         <option value="all">All Regions</option>
@@ -172,7 +172,7 @@
     </select>
     </div>
     <script>
-        // Function to fetch server data from API
+       //James Rausch      // Function to fetch server data from API
        function fetchServerData(region = 'all') {
         fetch('https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers')
         .then(response => response.json())
@@ -192,7 +192,7 @@
         fetchServerData(selectedRegion);
     });
 
-
+   //James Rausch  
        function deleteBucket(bucketName) {
            const endpoint = 'https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers/delete';
           
@@ -208,7 +208,7 @@
          document.location.reload(true);});
     }
 
-
+   //James Rausch  
     function displayServers(servers) {
         servers.forEach(server => {
             const serviceInstance = document.createElement("div");
@@ -239,7 +239,7 @@
 
     document.getElementById('submitServerName').addEventListener('click', function() {
     const serverName = document.getElementById('serverNameInput').value;
-
+   //James Rausch  
     // Check if server name is in lowercase and less than 64 characters
     if (serverName.match(/^[a-z]{1,64}$/)) { //regex to check if a-z and under 64 characters.
         // Send server name to the endpoint
@@ -258,7 +258,7 @@
     }
 });
 
-        
+    //James Rausch         
         // Adjusted function to show popup with server details
         function showPopup(server) {
             const popupContent = document.getElementById("popup");
@@ -271,7 +271,7 @@
             `;
             
         }
-        
+   //James Rausch     
         const serviceGrid = document.getElementById("serviceGrid");
         const popup = document.getElementById("popup");
         const closePopupButton = document.getElementById("closePopup");
@@ -288,7 +288,7 @@
 
 
         fetchServerData();
-
+//Varun Ravi Kumar
         function performLogout() {
     // Optional: Get the token from the URL if it's present in the query string
     const queryParams = new URLSearchParams(window.location.search);
