@@ -19,14 +19,14 @@ James Rausch  <br>
 *Unit Tests for Add,Delete,Display,Index Page + Settings Page <br>
 
 Proposed Future PBI's for Sprint 5 <br>
-*Unit Tests for Login/Logout/Reg + ListItems and Merge Buckets <br> Alex R?
-*Listitems + Merge Buckets Integration <br> Alex R?
-*Implement Open Pool / Cognito // James Rausch
-*Implement 2FA //James Rausch
-*Implement Research Accesibility Features //James Rausch
-*Implement Swap Regions <br> //James Rausch
-*Implement Multiple ARNS <br> //James Rausch
-*Implement Specific ARN, Explore by ARN //James Rausch
-*Integrate Chat Feature //Varun Ravi Kumar
-*Create and Upload Documentation //Varun Ravi Kumar
-*Documentation Page //Varun Ravi Kumar
+*Unit Tests for Login/Logout/Reg + ListItems and Merge Buckets //Alexander Rotteeveel <br> 
+*Listitems + Merge Buckets Integration //Alexander Rotteeveel <br> 
+*Implement Open Pool / Cognito // James Rausch <br> 
+*Implement 2FA //James Rausch  <br> 
+*Implement Research Accesibility Features //James Rausch  <br> 
+*Implement Swap Regions <br> //James Rausch  <br> 
+*Implement Multiple ARNS <br> //James Rausch  <br> 
+*Implement Specific ARN, Explore by ARN //James Rausch  <br> 
+*Integrate Chat Feature //Varun Ravi Kumar  <br> 
+*Create and Upload Documentation //Varun Ravi Kumar  <br> 
+*Documentation Page //Varun Ravi Kumar  <br> 
