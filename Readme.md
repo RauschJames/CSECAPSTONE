@@ -21,9 +21,10 @@ James Rausch  <br>
 Proposed Future PBI's for Sprint 5 <br>
 *Unit Tests for Login/Logout/Reg + ListItems and Merge Buckets //Alexander Rotteeveel <br> 
 *Listitems + Merge Buckets Integration //Alexander Rotteeveel <br> 
+*Time every function against AWS //Alexander Rotteeveel <br>
 *Implement Open Pool / Cognito // James Rausch <br> 
 *Implement 2FA //James Rausch  <br> 
-*Implement Research Accesibility Features //James Rausch  <br> 
+* Research Accesibility Features //James Rausch  <br> 
 *Implement Swap Regions <br> //James Rausch  <br> 
 *Implement Multiple ARNS <br> //James Rausch  <br> 
 *Implement Specific ARN, Explore by ARN //James Rausch  <br> 
