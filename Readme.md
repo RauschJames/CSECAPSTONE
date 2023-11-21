@@ -25,8 +25,8 @@ Proposed Future PBI's for Sprint 5 <br>
 *Implement Open Pool / Cognito // James Rausch <br> 
 *Implement 2FA //James Rausch  <br> 
 *Research Accesibility Features //James Rausch  <br> 
-*Implement Swap Regions <br> //James Rausch  <br> 
-*Implement Multiple ARNS <br> //James Rausch  <br> 
+*Implement Swap Regions  //James Rausch  <br> 
+*Implement Multiple ARNS //James Rausch  <br> 
 *Implement Specific ARN, Explore by ARN //James Rausch  <br> 
 *Integrate Chat Feature //Varun Ravi Kumar  <br> 
 *Create and Upload Documentation //Varun Ravi Kumar  <br> 
