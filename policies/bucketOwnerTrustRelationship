@@ -1,0 +1,13 @@
+//Trust relationship for the IAM role of the bucket owner, allows my lambda function to access their bucket
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Principal": {
+                "AWS": "arn:aws:iam::536394966329:root"
+            },
+            "Action": "sts:AssumeRole"
+        }
+    ]
+}
