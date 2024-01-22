@@ -1,0 +1,23 @@
+//This policy allows my lambda function to be invoked through an API call that I set up
+// account number, lambda function name and pathway should be modified for another user wishing to use
+
+{
+  "Version": "2012-10-17",
+  "Id": "default",
+  "Statement": [
+    {
+      "Sid": "Allow-API-Gateway-Invoke",
+      "Effect": "Allow",
+      "Principal": {
+        "Service": "apigateway.amazonaws.com"
+      },
+      "Action": "lambda:InvokeFunction",
+      "Resource": "arn:aws:lambda:us-west-2:536394966329:function:listBucketData",
+      "Condition": {
+        "ArnLike": {
+          "AWS:SourceArn": "arn:aws:execute-api:us-west-2:536394966329:kyr5dc3n5f/*/GET/getBucketData"
+        }
+      }
+    }
+  ]
+}
