@@ -1,0 +1,12 @@
+//This policy should be attached to the IAM role of the lambda function owner (user who is consuming other aws users for bucket access)
+
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "sts:AssumeRole",
+            "Resource": "arn:aws:iam::*:role/assumeRole"
+        }
+    ]
+}
