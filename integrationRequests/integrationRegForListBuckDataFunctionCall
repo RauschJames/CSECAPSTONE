@@ -1,0 +1,8 @@
+#set($inputRoot = $input.path('$'))
+{
+  "multiValueQueryStringParameters": {
+    "bucket": "$util.escapeJavaScript($input.params().querystring.get('bucket'))",
+    "account": "$util.escapeJavaScript($input.params().querystring.get('account'))",
+    "role": "$util.escapeJavaScript($input.params().querystring.get('role'))"
+  }
+}
