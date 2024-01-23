@@ -7,7 +7,7 @@
 
 ## Alex
 - Displaying/Getting User Bucket Data Function
-- Implementation of client-side
+- Implementation of client-side to call the API to get user bucket data
 
 ## Varun
 - Updating the database to include account information and other related fields
