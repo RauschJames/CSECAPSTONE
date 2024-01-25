@@ -9,7 +9,7 @@ def swap_region(bucket_arn, target_region):
     current_region = bucket_arn.split(':')[3]
     s3_client_current = boto3.client('s3', region_name=current_region)
 
-    # Get the bucket location
+    
     response = s3_client_current.get_bucket_location(Bucket=bucket_name)
     current_bucket_location = response.get('LocationConstraint', 'us-east-1')
 
@@ -27,13 +27,13 @@ def swap_region(bucket_arn, target_region):
         copy_source = {'Bucket': bucket_name, 'Key': obj['Key']}
         s3_client_target.copy_object(CopySource=copy_source, Bucket=bucket_name, Key=obj['Key'])
 
-    # Optionally, you can delete the objects in the current region after copying
+   
 
     return f"The bucket '{bucket_name}' has been successfully switched to the target region '{target_region}'."
 
 def lambda_handler(event, context):
     try:
-        # Parse input parameters from the API Gateway event
+
         body = json.loads(event['body'])
         bucket_arn = body.get('bucket_arn', '')
         target_region = body.get('target_region', '')
