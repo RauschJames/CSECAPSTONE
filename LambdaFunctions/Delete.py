@@ -14,13 +14,14 @@ def lambda_handler(event, context):
         RoleArn=f'arn:aws:iam::{account_id}:role/{role_name}',
         RoleSessionName='AssumeRoleSession1'
     )
-
+    s3_region = get_bucket_region(bucket_name, assumed_role)
     # Initialize S3 client with assumed role credentials
     s3 = boto3.client(
         's3',
         aws_access_key_id=assumed_role['Credentials']['AccessKeyId'],
         aws_secret_access_key=assumed_role['Credentials']['SecretAccessKey'],
         aws_session_token=assumed_role['Credentials']['SessionToken']
+         config=boto3.session.Config(signature_version='s3v4',region_name=s3_region)
     )
 
     try:
