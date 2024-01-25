@@ -14,12 +14,13 @@ def assume_role(account_id, role_name):
 
 def list_buckets_with_regions(assumed_role):
     # Initialize a boto3 client for S3 with assumed role credentials
+    s3_region = get_bucket_region(bucket_name, assumed_role)
     s3_client = boto3.client(
         's3',
         aws_access_key_id=assumed_role['Credentials']['AccessKeyId'],
         aws_secret_access_key=assumed_role['Credentials']['SecretAccessKey'],
         aws_session_token=assumed_role['Credentials']['SessionToken']
-        config=boto3.session.Config(signature_version='s3v4')
+        config=boto3.session.Config(signature_version='s3v4',region_name=s3_region)
     )
 
     response = s3_client.list_buckets()
