@@ -41,6 +41,7 @@ def swap_region(bucket_arn, target_region, assumed_role):
         aws_access_key_id=assumed_role['Credentials']['AccessKeyId'],
         aws_secret_access_key=assumed_role['Credentials']['SecretAccessKey'],
         aws_session_token=assumed_role['Credentials']['SessionToken']
+        config=boto3.session.Config(signature_version='s3v4', region_name=s3_region)
     )
 
     # List objects in the bucket and copy them to the target region
