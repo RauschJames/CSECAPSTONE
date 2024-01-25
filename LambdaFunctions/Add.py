@@ -1,7 +1,9 @@
 #James Rausch
 import boto3
 import json
+lambda_region = 'us-west-2'
 
+boto3.setup_default_session(region_name=lambda_region) #added 
 def lambda_handler(event, context):
     # Extracting the bucket name, account ID, and role name from the query parameters
     bucket_name = event['queryStringParameters']['bucketName']
@@ -21,6 +23,7 @@ def lambda_handler(event, context):
         aws_access_key_id=assumed_role['Credentials']['AccessKeyId'],
         aws_secret_access_key=assumed_role['Credentials']['SecretAccessKey'],
         aws_session_token=assumed_role['Credentials']['SessionToken']
+        config=boto3.session.Config(signature_version='s3v4')
     )
 
     # Create the bucket
