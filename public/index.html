@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+</head>
+<body>
+    <h2>Welcome to Craig's Website</h2>
+    <button onclick="redirectTo('/login')">Login</button>
+    <button onclick="redirectTo('/register')">Register</button>
+
+    <script>
+        function redirectTo(path) {
+            window.location.href = path;
+        }
+    </script>
+</body>
+</html>
+

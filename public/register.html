@@ -1,0 +1,32 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+</head>
+<body>
+    <h2>Register</h2>
+    <form action="/register" method="post">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
+        <button type="submit">Register</button>
+    </form>
+    <button onclick="redirectTo('/')">Go Back to Main Page</button>
+
+    <script>
+    function redirectTo(path) {
+      window.location.href = path;
+    }
+
+    function showSuccessMessage() {
+      
+      setTimeout(function() {
+        document.getElementById('successMessage').style.display = 'block';
+      }, 1000);
+    }
+    </script>
+</body>
+</html>
