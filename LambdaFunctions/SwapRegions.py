@@ -1,7 +1,9 @@
 #James Rausch
 import boto3
 import json
+lambda_region = 'us-west-2'
 
+boto3.setup_default_session(region_name=lambda_region) #added 
 def assume_role(account_id, role_name):
     sts_client = boto3.client('sts')
     assumed_role = sts_client.assume_role(
@@ -24,6 +26,7 @@ def swap_region(bucket_arn, target_region, assumed_role):
         aws_access_key_id=assumed_role['Credentials']['AccessKeyId'],
         aws_secret_access_key=assumed_role['Credentials']['SecretAccessKey'],
         aws_session_token=assumed_role['Credentials']['SessionToken']
+        
     )
 
     # Get the current bucket location
@@ -41,7 +44,7 @@ def swap_region(bucket_arn, target_region, assumed_role):
         aws_access_key_id=assumed_role['Credentials']['AccessKeyId'],
         aws_secret_access_key=assumed_role['Credentials']['SecretAccessKey'],
         aws_session_token=assumed_role['Credentials']['SessionToken']
-        config=boto3.session.Config(signature_version='s3v4', region_name=s3_region)
+        config=boto3.session.Config(signature_version='s3v4')
     )
 
     # List objects in the bucket and copy them to the target region
