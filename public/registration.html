@@ -62,14 +62,14 @@ body {
 <body>
     <div class="registration-container">
         <form action="http://localhost:8000/submit-form" method="POST" class="registration-form">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
+            <label for="account_id">Username:</label>
+            <input type="text" id="account_id" name="account_id" required>
 
             <label for="dob">Date of Birth:</label>
-            <input type="date" id="dob" name="dob" required>
+            <input type="date" id="dob" name="dob" >
 
             <label for="hometown">Hometown:</label>
-            <input type="text" id="hometown" name="hometown" required>
+            <input type="text" id="hometown" name="hometown">
 
             <label for="gender">Gender:</label>
             <select id="gender" name="gender" required>
@@ -83,6 +83,9 @@ body {
 
             <label for="password-again">Password Again:</label>
             <input type="password" id="password-again" name="password-again" required>
+
+            <label for="role_name">role:</label>
+            <input type="text" id="role_name" name="role_name" required>
 
             <input type="submit" value="Submit">
         </form>
