@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Server Contents</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <style>
         /* Your existing styles */
         /* Additional styles for displaying file content on hover */
@@ -26,44 +27,43 @@
     <div id="content-area"></div>
     <!-- James Rausch  fetchbucketdata -->
     <script>
-        function fetchBucketData() {
-            fetch('https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/GetBucketData')
-                .then(response => response.json()) <!-- pull response data and log error -->
-                .then(data => displayContents(data))
+        function fetchBucketData(bucketData) {
+            fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/getBucketData?bucket=${bucketData.bucket_name}&account=${bucketData.bucket_owner_id}&role=${bucketData.bucket_owner_role}`)
+                .then(response => response.json())                                                                                                                                                              
+                .then(data => {
+                    data = JSON.parse(data.body);
+                    displayContents(data) 
+                })
                 .catch(error => console.error('Error:', error));
         }
 
         function displayContents(data) {
             const contentArea = document.getElementById('content-area');
             const ul = document.createElement('ul');
-             <!-- Here this loops through data and displays for each item if it is hovered over -->
+             
             data.forEach(item => {
-                const li = document.createElement('li');
-                li.className = item.type === 'folder' ? 'folder' : 'file';
-                li.textContent = item.name;
-
-                if (item.type === 'file') {
-                    const hoverDiv = document.createElement('div');
-                    hoverDiv.className = 'hover-content';
-
-                    if (item.fileType === 'image') {
-                        const img = new Image();
-                        img.src = item.url;
-                        hoverDiv.appendChild(img);
-                    } else if (item.fileType === 'text') {
-                        hoverDiv.textContent = 'Text content: ' + item.content;
-                    }
-
-                    li.appendChild(hoverDiv);
-                }
-
-                ul.appendChild(li);
+                
+                const iframe = document.createElement('iframe');
+                iframe.src = item;
+                
+                iframe.width = '300';
+                iframe.height = '200';
+              
+                contentArea.appendChild(iframe);
             });
-
-            contentArea.appendChild(ul);
         }
+        function getBucketDataForService() {
+            $.ajax({
+            url: '/getBucketData',
+            method: 'GET',
 
-        fetchBucketData();
+            }).done(function(response) {
+                fetchBucketData(response);
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error('Error:', textStatus, errorThrown);
+            })
+        }
+        getBucketDataForService();
     </script>
 </body>
 </html>

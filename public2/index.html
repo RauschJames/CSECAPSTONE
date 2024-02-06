@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AWS Service Explorer</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <style>
        
         body {
@@ -114,11 +115,11 @@
     </div>
 
     <div class="popup" id="popup">
-        <div class="popup-content">
+        <div class="popup-content" id="popContent">
             <!-- James Rausch -->
             <h2>Server Information</h2>
             <p id="serverInfo">Loading...</p>
-           <a href="ServiceContext.html" id="ServiceContext">Server Contents</a>
+           
     
             <button id="closePopup">Close</button>
             
@@ -173,11 +174,12 @@
     </div>
     <script>
        //James Rausch      // Function to fetch server data from API
-       function fetchServerData(region = 'all') {
-        fetch('https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers')
+       function fetchServerData(sessionData, region = 'all') {
+        fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/getBuckets?account=${sessionData.account_id}&role=${sessionData.role_name}`)
         .then(response => response.json())
         .then(data => {
             if (region === 'all') {
+                data = JSON.parse(data.body);
                 displayServers(data);
             } else {
                 const filteredData = data.filter(server => server.REGION === region);
@@ -189,7 +191,7 @@
         document.getElementById('regionDropdown').addEventListener('change', function() {
         const selectedRegion = this.value;
         serviceGrid.innerHTML = '';
-        fetchServerData(selectedRegion);
+        getSessionDataForService(selectedRegion);
     });
 
    //James Rausch  
@@ -262,6 +264,7 @@
         // Adjusted function to show popup with server details
         function showPopup(server) {
             const popupContent = document.getElementById("popup");
+            const popupContent4Life = document.getElementById("popContent");
             const serverInfo = document.getElementById("serverInfo");
             popupContent.style.display = "flex";
             serverInfo.innerHTML = `
@@ -269,6 +272,13 @@
                 <strong>ARN:</strong> ${server.ARN} <br>
                 <strong>Region:</strong> ${server.REGION}
             `;
+            const serviceContextLink = document.createElement("a");
+            serviceContextLink.href = `/ServiceContext?bucket_owner_id=${server.ACCOUNT_ID}&bucket_name=${server.BucketName}&bucket_owner_role=${server.ROLE_NAME}`;
+            serviceContextLink.id = "ServiceContext";
+            serviceContextLink.textContent = "Server Contents";
+
+    
+            popupContent4Life.appendChild(serviceContextLink);
             
         }
    //James Rausch     
@@ -286,8 +296,19 @@
             dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
         });
 
+        function getSessionDataForService(region = 'all') {
+            $.ajax({
+            url: '/getSessionData',
+            method: 'GET',
 
-        fetchServerData();
+            }).done(function(response) {
+                fetchServerData(response, region);
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error('Error:', textStatus, errorThrown);
+            })
+        }
+
+        getSessionDataForService();
 //Varun Ravi Kumar
         function performLogout() {
     // Optional: Get the token from the URL if it's present in the query string
