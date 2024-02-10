@@ -2,10 +2,10 @@
 import boto3
 import json
 
-def assume_role(account_id, role_name):
+def assume_role(account, role):
     sts_client = boto3.client('sts')
     assumed_role = sts_client.assume_role(
-        RoleArn=f'arn:aws:iam::{account_id}:role/{role_name}',
+        RoleArn=f'arn:aws:iam::{account_id}:role/{role}',
         RoleSessionName='AssumeRoleSession1'
     )
     return assumed_role
