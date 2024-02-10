@@ -24,9 +24,9 @@ def lambda_handler(event, context):
         # Extract necessary information from the event
         source_bucket = event['bucket1']
         destination_bucket = event['bucket2']
-        source_account_id = event.get('source_account_id')  # Optional, use if different from Lambda execution account
-        destination_account_id = event.get('destination_account_id')  # Optional, use if different from Lambda execution account
-        role_name = event.get('role_name')  # Required if assuming a role
+        source_account_id = event.get('account')  # Optional, use if different from Lambda execution account
+        destination_account_id = event.get('account')  # Optional, use if different from Lambda execution account
+        role_name = event.get('role')  # Required if assuming a role
         source_region = event.get('source_region', 'us-east-1')  # Default to us-east-1 if not provided
         destination_region = event.get('destination_region', 'us-east-1')  # Default to us-east-1 if not provided
 
