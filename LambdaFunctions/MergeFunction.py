@@ -1,4 +1,4 @@
-#James Rausch
+
 import boto3
 import json
 
@@ -22,8 +22,8 @@ def get_s3_client(credentials, region_name):
 def lambda_handler(event, context):
     try:
         # Extract necessary information from the event
-        source_bucket = event['source_bucket']
-        destination_bucket = event['destination_bucket']
+        source_bucket = event['bucket1']
+        destination_bucket = event['bucket2']
         source_account_id = event.get('source_account_id')  # Optional, use if different from Lambda execution account
         destination_account_id = event.get('destination_account_id')  # Optional, use if different from Lambda execution account
         role_name = event.get('role_name')  # Required if assuming a role
