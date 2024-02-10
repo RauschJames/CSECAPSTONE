@@ -173,6 +173,7 @@
     </select>
     </div>
     <script>
+        const url = `https://gl9k5cirg9.execute-api.us-east-1.amazonaws.com/Stage1?bucket1=${bucket1Encoded}&bucket2=${bucket2Encoded}&account=${accountEncoded}&role=${roleEncoded}`;
        //James Rausch      // Function to fetch server data from API
        function fetchServerData(sessionData, region = 'all') {
         fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/getBuckets?account=${sessionData.account_id}&role=${sessionData.role_name}`)
@@ -194,6 +195,39 @@
         getSessionDataForService(selectedRegion);
     });
 
+        function fetchMergeData(bucket1,bucket2,urlMerge) {
+            
+            const bucket1Encoded = encodeURIComponent(bucket1);
+            const bucket2Encoded = encodeURIComponent(bucket2);
+            const accountEncoded = encodeURIComponent(sessionData.account_id);
+            const roleEncoded = encodeURIComponent(sessionData.role_name);
+
+            fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                throw new Error('failed to merge');
+            }
+            return response.json();
+            })
+            .then(data => {
+            console.log('merge sucess', data);
+            })
+            .catch(error => console.error('Error:', error));
+        }
+       
+            
+
+        function displayContents(files) {
+            const contentArea = document.getElementById('content-area');
+            files.forEach(file => {
+                const div = document.createElement('div');
+                div.textContent = file; // Or create an <a> tag if files are downloadable URLs
+                contentArea.appendChild(div);
+            });
+        }
+        
+        fetchBucketData();
+    </script>
    //James Rausch  
        function deleteBucket(bucketName) {
            const endpoint = 'https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers/delete';
