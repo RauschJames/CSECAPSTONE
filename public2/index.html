@@ -366,35 +366,21 @@
         }
 
         getSessionDataForService();
-//Varun Ravi Kumar
-        function performLogout() {
-    // Optional: Get the token from the URL if it's present in the query string
-    const queryParams = new URLSearchParams(window.location.search);
-    const token = queryParams.get('token');
 
-    
-    if (token) {
-        fetch('/logout', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            
-            body: JSON.stringify({ currentUrl: window.location.href })
-        })
-        .then(response => {
-            if (response.ok) {
-                window.location.href = '/';
-            } else {
-                console.error('Logout failed');
-            }
-        })
-        .catch(error => {
-            console.error('Error during logout:', error);
-        });
-    } else {
-        console.error('No token found for logout');
-    }
-}
+          //Varun Ravi Kumar
+        function performLogout() {
+            fetch('/logout', {
+                method: 'POST',
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    console.error('Logout failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error during logout:', error);
+            });
+        }
 </script>
