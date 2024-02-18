@@ -15,6 +15,11 @@ app.use(session({
     saveUninitialized: true
 }));
 
+app.use((req, res, next) => {
+    res.setHeader('Cache-Control', 'no-store'); 
+    next();
+});
+
 const config = {
     user: 'sql3680058',
     password: 'r713z9gGLf',
@@ -152,16 +157,21 @@ app.post('/login', async (req, res) => {
 });
 
 app.get('/index', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public2', 'index.html'));
+    if(req.session.account_id && req.session.role_name){
+        res.sendFile(path.join(__dirname, 'public2', 'index.html'));
+    }
+    else{
+        res.redirect('/');    
+    }   
 });
 
-app.post('/logout', async (req, res) => {
+app.post('/logout', (req, res) => {
     req.session.destroy((err) => {
         if (err) {
-          console.error('Error destroying session:', err);
-          res.status(500).send('Server error');
+            console.error('Error destroying session:', err);
+            res.status(500).send('Server error');
         } else {
-          res.redirect('/login'); 
+            res.redirect('/');
         }
     });
 });
