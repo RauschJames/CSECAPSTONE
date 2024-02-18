@@ -176,6 +176,9 @@
      //   const urlMerge = `https://gl9k5cirg9.execute-api.us-east-1.amazonaws.com/Stage1?bucket1=${bucket1Encoded}&bucket2=${bucket2Encoded}&account=${accountEncoded}&role=${roleEncoded}`;
       //  const urlSwap = 'https://54ryng9nd2.execute-api.us-east-1.amazonaws.com/bucket_name=${bucketEncoded}&target_region=${region1Encoded}&account=${accountEncoded}&role=${roleEncoded}`
        //James Rausch      // Function to fetch server data from API
+       
+       var ServerContentsLabel = false;
+
        function fetchServerData(sessionData, region = 'all') {
         fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/getBuckets?account=${sessionData.account_id}&role=${sessionData.role_name}`)
         .then(response => response.json())
@@ -247,8 +250,6 @@
             });
         }
         
-        fetchServerData(sessionData);
-    </script>
    //James Rausch  
        function deleteBucket(bucketName) {
            const endpoint = 'https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers/delete';
@@ -327,14 +328,15 @@
                 <strong>ARN:</strong> ${server.ARN} <br>
                 <strong>Region:</strong> ${server.REGION}
             `;
-            const serviceContextLink = document.createElement("a");
-            serviceContextLink.href = `/ServiceContext?bucket_owner_id=${server.ACCOUNT_ID}&bucket_name=${server.BucketName}&bucket_owner_role=${server.ROLE_NAME}`;
-            serviceContextLink.id = "ServiceContext";
-            serviceContextLink.textContent = "Server Contents";
-
-    
-            popupContent4Life.appendChild(serviceContextLink);
             
+            if(ServerContentsLabel == false) {
+                const serviceContextLink = document.createElement("a");
+                serviceContextLink.href = `/ServiceContext?bucket_owner_id=${server.ACCOUNT_ID}&bucket_name=${server.BucketName}&bucket_owner_role=${server.ROLE_NAME}`;
+                serviceContextLink.id = "ServiceContext";
+                serviceContextLink.textContent = "Server Contents";
+                popupContent4Life.appendChild(serviceContextLink);
+                ServerContentsLabel = true;
+            }
         }
    //James Rausch     
         const serviceGrid = document.getElementById("serviceGrid");
