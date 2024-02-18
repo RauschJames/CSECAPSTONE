@@ -1,0 +1,3 @@
+{
+  "body": "{\"bucket_name\": \"capstone-group-bucket\", \"target_region\": \"eu-west-1\", \"account_id\": \"267733005040\", \"role_name\": \"assumeRole\"}"
+}
