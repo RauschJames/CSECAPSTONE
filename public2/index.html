@@ -173,8 +173,8 @@
     </select>
     </div>
     <script>
-        const urlMerge = `https://gl9k5cirg9.execute-api.us-east-1.amazonaws.com/Stage1?bucket1=${bucket1Encoded}&bucket2=${bucket2Encoded}&account=${accountEncoded}&role=${roleEncoded}`;
-        const urlSwap = 'https://54ryng9nd2.execute-api.us-east-1.amazonaws.com/bucket_name=${bucketEncoded}&target_region=${region1Encoded}&account=${accountEncoded}&role=${roleEncoded}`
+     //   const urlMerge = `https://gl9k5cirg9.execute-api.us-east-1.amazonaws.com/Stage1?bucket1=${bucket1Encoded}&bucket2=${bucket2Encoded}&account=${accountEncoded}&role=${roleEncoded}`;
+      //  const urlSwap = 'https://54ryng9nd2.execute-api.us-east-1.amazonaws.com/bucket_name=${bucketEncoded}&target_region=${region1Encoded}&account=${accountEncoded}&role=${roleEncoded}`
        //James Rausch      // Function to fetch server data from API
        function fetchServerData(sessionData, region = 'all') {
         fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/getBuckets?account=${sessionData.account_id}&role=${sessionData.role_name}`)
@@ -195,7 +195,7 @@
         serviceGrid.innerHTML = '';
         getSessionDataForService(selectedRegion);
     });
-
+/**
         function fetchMergeData(bucket1,bucket2,urlMerge) {
             
             const bucket1Encoded = encodeURIComponent(bucket1);
@@ -236,7 +236,7 @@
         }
        
        
-            
+        **/    
 
         function displayContents(files) {
             const contentArea = document.getElementById('content-area');
