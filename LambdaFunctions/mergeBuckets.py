@@ -58,8 +58,7 @@ def lambda_handler(event, context):
         for obj in response.get('Contents', []):
             response = s3_client_source.get_object(Bucket=source_bucket, Key=obj['Key'])
             object_data = response['Body'].read()
-            s3_client_destination.put_object(Bucket=destination_bucket, Key=obj['Key'], Body=object_data)
-
+            s3_client_destination.put_object(Bucket=destination_bucket, Key=obj['Key'], Body=object_data, ContentType=response['ContentType'])
 
         return {
             'statusCode': 200,
