@@ -181,18 +181,23 @@
        var ServerContentsLabel = false;
 
        function fetchServerData(sessionData, region = 'all') {
-        fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/getBuckets?account=${sessionData.account_id}&role=${sessionData.role_name}`)
-        .then(response => response.json())
-        .then(data => {
-            if (region === 'all') {
-                data = JSON.parse(data.body);
-                displayServers(data);
-            } else {
-                const filteredData = data.filter(server => server.REGION === region);
-                displayServers(filteredData);
-            }
-        })
-        .catch(error => console.error('Error:', error));
+        
+        let resultSet = sessionData.results;
+        
+        for(let i = 0; i < resultSet.length; i++) {
+            fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/getBuckets?account=${resultSet[i].account_id}&role=${resultSet[i].role_name}`)
+            .then(response => response.json())
+            .then(data => {
+                if (region === 'all') {
+                    data = JSON.parse(data.body);
+                    displayServers(data);
+                } else {
+                    const filteredData = data.filter(server => server.REGION === region);
+                    displayServers(filteredData);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
 }
         document.getElementById('regionDropdown').addEventListener('change', function() {
         const selectedRegion = this.value;

@@ -177,7 +177,43 @@ app.post('/logout', (req, res) => {
 });
 
 app.get('/getSessionData', (req, res) => {
-    res.json(req.session);
+    
+    const connection = mysql.createConnection(config);
+
+    connection.connect(err => {
+        if (err) {
+            console.error('Error connecting to the database:', err);
+            process.exit(1); 
+        } else {
+            console.log('Connected to the MySQL database.');
+        }
+    });
+    
+    const query = `
+        SELECT account_id, role_name
+        FROM   user_accounts
+        ORDER BY account_id = ? DESC;
+    `;
+
+    connection.query(query, [req.session.account_id], (err, results) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send('Server error: ' + err.message);
+            return;
+        }
+        else {
+            req.session.results = results;
+            res.json(req.session);
+        } 
+    });
+        
+    connection.end((err) => {
+        if (err) {
+            console.error('Error closing the connection: ', err);
+        } else {
+            console.log('Connection closed successfully.');
+        }
+    });
 });
 
 app.listen(8000, function () {
