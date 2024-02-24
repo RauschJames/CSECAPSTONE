@@ -204,6 +204,21 @@
         serviceGrid.innerHTML = '';
         getSessionDataForService(selectedRegion);
     });
+        function mergeBuckets(bucket1, bucket2) {
+    // Construct API URL with dynamic parameters
+    const apiUrl = `https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/mergeBuckets?bucket=${encodeURIComponent(bucket1)}&account=267733005040&role=assumeRole&bucket2=${encodeURIComponent(bucket2)}&account2=654654522093&role2=testSoftwareRole`;
+    
+    fetch(apiUrl)
+    .then(response => response.json())
+    .then(data => {
+        console.log('Merge successful', data);
+        
+    })
+    .catch(error => {
+        console.error('Error during bucket merge:', error);
+        
+    });
+}
 /**
         function fetchMergeData(bucket1,bucket2,urlMerge) {
             
