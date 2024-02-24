@@ -133,6 +133,15 @@
 
     </div>
     <button id="addServerButton">Add Server</button>
+    <button id="mergeBucketsButton">Merge Buckets</button>
+    <div class="merge-buckets-popup" id="mergeBucketsPopup" style="display:none; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.2); border-radius: 5px;">
+    <h2>Merge Buckets</h2>
+    <input type="text" id="bucket1Input" placeholder="Enter first bucket name">
+    <input type="text" id="bucket2Input" placeholder="Enter second bucket name">
+    <button id="submitMergeBuckets">Merge</button>
+    <button onclick="document.getElementById('mergeBucketsPopup').style.display = 'none'">Close</button>
+</div>
+
     <button id="logoutButton" onclick="performLogout()">Logout</button>
   <!-- James Rausch -->
     <div class="add-server-popup" id="addServerPopup" style="display:none; position: fixed; right: 10px; bottom: 10px;">
@@ -315,7 +324,20 @@
     document.getElementById('closeAddServerPopup').addEventListener('click', function() {
     document.getElementById('addServerPopup').style.display = 'none';
     });
+document.getElementById('mergeBucketsButton').addEventListener('click', function() {
+    document.getElementById('mergeBucketsPopup').style.display = 'block';
+});
 
+document.getElementById('submitMergeBuckets').addEventListener('click', function() {
+    const bucket1 = document.getElementById('bucket1Input').value;
+    const bucket2 = document.getElementById('bucket2Input').value;
+    
+    // Call the mergeBuckets function with the user-provided bucket names
+    mergeBuckets(bucket1, bucket2);
+    
+    // Close the popup after invoking the merge function
+    document.getElementById('mergeBucketsPopup').style.display = 'none';
+});
     document.getElementById('submitServerName').addEventListener('click', function() {
     const serverName = document.getElementById('serverNameInput').value;
    //James Rausch  
