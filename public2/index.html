@@ -1,7 +1,7 @@
-<!-- James Rausch -->
+<!-- James Rausch Alex Rotteveel-->
 <!DOCTYPE html>
 <html lang="en">
-<head> <!-- James Rausch -->
+<head> <!-- James Rausch, Alex Rotteveel -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AWS Service Explorer</title>
@@ -133,15 +133,6 @@
 
     </div>
     <button id="addServerButton">Add Server</button>
-    <button id="mergeBucketsButton">Merge Buckets</button>
-    <div class="merge-buckets-popup" id="mergeBucketsPopup" style="display:none; position: fixed; left: 50%; top: 50%; transform: translate(-50%, -50%); background: white; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.2); border-radius: 5px;">
-    <h2>Merge Buckets</h2>
-    <input type="text" id="bucket1Input" placeholder="Enter first bucket name">
-    <input type="text" id="bucket2Input" placeholder="Enter second bucket name(Only Owned Buckets will be validated)">
-    <button id="submitMergeBuckets">Merge</button>
-    <button onclick="document.getElementById('mergeBucketsPopup').style.display = 'none'">Close</button>
-</div>
-
     <button id="logoutButton" onclick="performLogout()">Logout</button>
   <!-- James Rausch -->
     <div class="add-server-popup" id="addServerPopup" style="display:none; position: fixed; right: 10px; bottom: 10px;">
@@ -183,34 +174,10 @@
     </select>
     </div>
     <script>
-     //   const urlMerge = `https://gl9k5cirg9.execute-api.us-east-1.amazonaws.com/Stage1?bucket1=${bucket1Encoded}&bucket2=${bucket2Encoded}&account=${accountEncoded}&role=${roleEncoded}`;
-      //  const urlSwap = 'https://54ryng9nd2.execute-api.us-east-1.amazonaws.com/bucket_name=${bucketEncoded}&target_region=${region1Encoded}&account=${accountEncoded}&role=${roleEncoded}`
-       //James Rausch      // Function to fetch server data from API
-       async function fetchServerData2(sessionData, region = 'all') {
-    let resultSet = sessionData.results;
-    let userBuckets = []; // Array to store buckets
-
-    for (let i = 0; i < resultSet.length; i++) {
-        try {
-            let response = await fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/getBuckets?account=${resultSet[i].account_id}&role=${resultSet[i].role_name}`);
-            let data = await response.json();
-
-            if (region === 'all') {
-                data = JSON.parse(data.body);
-            } else {
-                data = data.filter(server => server.REGION === region);
-            }
-
-            userBuckets.push(...data); // Add buckets to array
-          
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
-
-    return userBuckets; // Return the array of buckets
-}
+       
        var ServerContentsLabel = false;
+       var buttons = [];
+       var mergeState = {};
 
        function fetchServerData(sessionData, region = 'all') {
         
@@ -222,10 +189,10 @@
             .then(data => {
                 if (region === 'all') {
                     data = JSON.parse(data.body);
-                    displayServers(data);
+                    displayServers(data, resultSet);
                 } else {
                     const filteredData = data.filter(server => server.REGION === region);
-                    displayServers(filteredData);
+                    displayServers(filteredData, resultSet);
                 }
             })
             .catch(error => console.error('Error:', error));
@@ -236,67 +203,6 @@
         serviceGrid.innerHTML = '';
         getSessionDataForService(selectedRegion);
     });
-       async function mergeBuckets(bucket1, bucket2, userBuckets) {
-    // Check if bucket2 is in userBuckets
-    if (!userBuckets.some(bucket => bucket.name === bucket2)) {
-        console.error('Error: Destination bucket not owned by the user.'); //FIX SO ONLY INPUTS GOOD USER
-        return;
-    }
-
-    // If validation passes, proceed with the merge
-    const apiUrl = `https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/mergeBuckets?bucket=${encodeURIComponent(bucket1)}&account=267733005040&role=assumeRole&bucket2=${encodeURIComponent(bucket2)}&account2=654654522093&role2=testSoftwareRole`;
-
-    try {
-        let response = await fetch(apiUrl);
-        let data = await response.json();
-        console.log('Merge successful', data);
-    } catch (error) {
-        console.error('Error during bucket merge:', error);
-    }
-}
-/**
-        function fetchMergeData(bucket1,bucket2,urlMerge) {
-            
-            const bucket1Encoded = encodeURIComponent(bucket1);
-            const bucket2Encoded = encodeURIComponent(bucket2);
-            const accountEncoded = encodeURIComponent(sessionData.account_id);
-            const roleEncoded = encodeURIComponent(sessionData.role_name);
-
-            fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                throw new Error('failed to merge');
-            }
-            return response.json();
-            })
-            .then(data => {
-            console.log('merge sucess', data);
-            })
-            .catch(error => console.error('Error:', error));
-        }
-            function fetchSwapRegion(bucket,region1) {
-            
-            const bucketEncoded = encodeURIComponent(bucket);
-            const region1Encoded = encodeURIComponent(region1);
-            const accountEncoded = encodeURIComponent(sessionData.account_id);
-            const roleEncoded = encodeURIComponent(sessionData.role_name);
-
-            fetch(url)
-            .then(response => {
-                if (!response.ok) {
-                throw new Error('failed to swap');
-            }
-            return response.json();
-            })
-            .then(data => {
-            console.log('swap sucess', data);
-            })
-            .catch(error => console.error('Error:', error));
-        }
-       
-       
-        **/    
-
         function displayContents(files) {
             const contentArea = document.getElementById('content-area');
             files.forEach(file => {
@@ -322,19 +228,60 @@
          document.location.reload(true);});
     }
 
-   //James Rausch  
-    function displayServers(servers) {
+   //James Rausch, Alex Rotteveel
+    function displayServers(servers, resultSet) {
+        
         servers.forEach(server => {
+            
             const serviceInstance = document.createElement("div");
             serviceInstance.className = "service-instance";
             serviceInstance.textContent = server.BucketName;
 
+            
         // Create delete button for each server
             const deleteButton = document.createElement("button");
             deleteButton.id = "deleteBucket";
             deleteButton.textContent = "Delete Bucket";
             deleteButton.onclick = () => deleteBucket(server.BucketName);
             serviceInstance.appendChild(deleteButton);
+            // Create merge button for each server
+            const mergeButton = document.createElement("button");
+            mergeButton.id = "mergeBucket";
+            mergeButton.textContent = "Merge Bucket";
+            serviceInstance.appendChild(mergeButton);
+
+            const mergeIntoButton = document.createElement("button");
+            mergeIntoButton.id = "mergeIntoButton";
+            mergeIntoButton.textContent = "Merge Into Bucket";
+            mergeIntoButton.style.display = "none";
+
+            if(server.ACCOUNT_ID === resultSet[0].account_id) {
+                buttons.push(mergeIntoButton);
+                serviceInstance.appendChild(mergeIntoButton);
+            }
+            
+            mergeButton.addEventListener("click", () => {
+                
+                mergeState.bucket2 = server.BucketName;
+                mergeState.account2 = server.ACCOUNT_ID;
+                mergeState.role2 = server.ROLE_NAME;
+                
+                buttons.forEach(button => {
+                    button.style.display = "block";
+                });              
+            });
+
+            mergeIntoButton.addEventListener("click", () => {
+                buttons.forEach(button => {
+                    button.style.display = "none";
+                }); 
+                fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/mergeBuckets?bucket=${server.BucketName}&account=${server.ACCOUNT_ID}&role=${server.ROLE_NAME}&bucket2=${mergeState.bucket2}&account2=${mergeState.account2}&role2=${mergeState.role2}`, {
+                    method: 'POST'
+                }).then(response => response.json())
+                .then(data => console.log(data))
+                .catch(error => console.error('Error:', error));
+                mergeState = {};
+            });
             
             serviceInstance.addEventListener("click", () => showPopup(server));
             deleteButton.addEventListener("click",() => {
@@ -350,23 +297,10 @@
     document.getElementById('closeAddServerPopup').addEventListener('click', function() {
     document.getElementById('addServerPopup').style.display = 'none';
     });
-document.getElementById('mergeBucketsButton').addEventListener('click', function() {
-    document.getElementById('mergeBucketsPopup').style.display = 'block';
-});
 
-document.getElementById('submitMergeBuckets').addEventListener('click', function() {
-    const bucket1 = document.getElementById('bucket1Input').value;
-    const bucket2 = document.getElementById('bucket2Input').value;
-    
-    // Call the mergeBuckets function with the user-provided bucket names
-    mergeBuckets(bucket1, bucket2,fetchServerData2(sessionData,region='all'));
-    
-    // Close the popup after invoking the merge function
-    document.getElementById('mergeBucketsPopup').style.display = 'none';
-});
     document.getElementById('submitServerName').addEventListener('click', function() {
     const serverName = document.getElementById('serverNameInput').value;
-   //James Rausch  
+   //James Rausch
     // Check if server name is in lowercase and less than 64 characters
     if (serverName.match(/^[a-z]{1,64}$/)) { //regex to check if a-z and under 64 characters.
         // Send server name to the endpoint
@@ -385,7 +319,7 @@ document.getElementById('submitMergeBuckets').addEventListener('click', function
     }
 });
 
-    //James Rausch         
+    //James Rausch, Alex Rotteveel      
         // Adjusted function to show popup with server details
         function showPopup(server) {
             const popupContent = document.getElementById("popup");
@@ -407,7 +341,7 @@ document.getElementById('submitMergeBuckets').addEventListener('click', function
                 ServerContentsLabel = true;
             }
         }
-   //James Rausch     
+   //James Rausch, Alex Rotteveel     
         const serviceGrid = document.getElementById("serviceGrid");
         const popup = document.getElementById("popup");
         const closePopupButton = document.getElementById("closePopup");
