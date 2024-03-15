@@ -1,95 +1,26 @@
-<!-- James Rausch and Alexander Rotteveel -->
+ <!--Varun Ravi Kumar -->
+<!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registration Page</title>
-    <link rel="stylesheet" href="styles.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registration Page</title>
+<link rel="stylesheet" href="styles/registrationStyles.css">
 </head>
-<style>
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f7f7f7;
-    margin: 0;
-    padding: 0;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.registration-container {
-    background-color: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
-}
-
-.registration-form label {
-    display: block;
-    margin-top: 20px;
-    margin-bottom: 5px;
-}
-
-.registration-form input[type="text"],
-.registration-form input[type="date"],
-.registration-form select,
-.registration-form input[type="password"] {
-    width: 100%;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    box-sizing: border-box;
-}
-
-.registration-form input[type="submit"] {
-    margin-top: 20px;
-    padding: 10px 20px;
-    border: none;
-    background-color: #007BFF;
-    color: white;
-    cursor: pointer;
-    border-radius: 5px;
-}
-
-.registration-form input[type="submit"]:hover {
-    background-color: #0056b3;
-}
-</style>
 <body>
-    <div class="registration-container">
-        <form action="/submit-form" method="POST" class="registration-form">
-            <label for="account_id">Account ID:</label>
-            <input type="text" id="account_id" name="account_id" required>
+  <div class="register-container">
+    <h1>Register</h1>
+    <form class="register-form" action="/submit-form" method="POST">
+      <input type="text" id="account_id" name="account_id" placeholder="Account ID" required>
 
-            <label for="dob">Date of Birth:</label>
-            <input type="date" id="dob" name="dob" required>
+      <input type="password" id="password" name="password" placeholder="Password" required>
 
-            <label for="hometown">Hometown:</label>
-            <input type="text" id="hometown" name="hometown" required>
+      <input type="password" id="passwordAgain" name="passwordAgain" placeholder="Confirm Password" required>
 
-            <label for="gender">Gender:</label>
-            <select id="gender" name="gender" required>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="nonbinary">Non-binary</option>
-            </select>
+      <input type="text" id="role" name="role" placeholder="AWS Role Name" required>
 
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-
-            <label for="password-again">Password Again:</label>
-            <input type="password" id="passwordAgain" name="passwordAgain" required>
-
-            <label for="roleName">Role name:</label>
-            <input type="text" id="role" name="role" required>
-
-            <input type="submit" value="Submit">
-        </form>
-    </div>
+      <button type="submit" class="register-button">Register</button>
+    </form>
+  </div>
 </body>
-
 </html>
