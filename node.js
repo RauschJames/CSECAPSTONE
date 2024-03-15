@@ -54,13 +54,13 @@ app.post('/submit-form', (req, res) => {
     connection.connect(err => {
         if (err) {
             console.error('Error connecting to the database:', err);
-            process.exit(1); // Exit the app if database connection is critical
+            process.exit(1);
         } else {
             console.log('Connected to the MySQL database.');
         }
     });
     
-    const { account_id, dob, hometown, gender, password, passwordAgain, role } = req.body;
+    const { account_id, password, passwordAgain, role } = req.body;
 
     if(password !== passwordAgain) {
         connection.end((err) => {
@@ -75,11 +75,11 @@ app.post('/submit-form', (req, res) => {
     
     else {
         const insertQuery = `
-            INSERT INTO user_accounts (account_id, password, role_name, hometown, gender, dob)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO user_accounts (account_id, password, role_name)
+            VALUES (?, ?, ?)
             `; 
 
-        const queryValues = [account_id, password, role, hometown, gender, dob];
+        const queryValues = [account_id, password, role];
 
         connection.query(insertQuery, queryValues, (err, results) => {
             if (err) {
@@ -109,7 +109,7 @@ app.post('/login', async (req, res) => {
     connection.connect(err => {
         if (err) {
             console.error('Error connecting to the database:', err);
-            process.exit(1); // Exit the app if database connection is critical
+            process.exit(1);
         } else {
             console.log('Connected to the MySQL database.');
         }
@@ -158,7 +158,9 @@ app.post('/login', async (req, res) => {
 
 app.get('/index', (req, res) => {
     if(req.session.account_id && req.session.role_name){
-        res.sendFile(path.join(__dirname, 'public2', 'index.html'));
+        res.sendFile(path.join(__dirname, 'public2', 'indexRedesigned.html'));
+        //res.sendFile(path.join(__dirname, 'public2', 'index.html'));
+        
     }
     else{
         res.redirect('/');    
