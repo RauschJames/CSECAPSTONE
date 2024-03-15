@@ -1,0 +1,59 @@
+/*--- Varun Ravi Kumar ---*/
+body, html {
+    height: 100%;
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f4f4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .register-container {
+    text-align: center;
+    background: white;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  }
+  
+  h1 {
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .register-form label {
+    display: none; /* Hide labels, use placeholders instead */
+  }
+  
+  .register-form input {
+    width: 80%;
+    padding: 10px;
+    margin: 10px 0;
+    border: none;
+    border-bottom: 2px solid #7c4dff;
+    box-sizing: border-box;
+  }
+  
+  .register-button {
+    width: 80%;
+    padding: 10px;
+    margin-top: 20px;
+    border: none;
+    color: white;
+    background-image: linear-gradient(to right, #8e2de2, #4a00e0);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+  }
+  
+  .register-button:hover {
+    opacity: 0.8;
+  }
+  
+  @media (max-width: 600px) {
+    .register-container {
+      width: 90%;
+      padding: 30px;
+    }
+  }  
