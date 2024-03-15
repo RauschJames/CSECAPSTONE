@@ -1,0 +1,509 @@
+<!-- James Rausch Alex Rotteveel-->
+<!DOCTYPE html>
+<html lang="en">
+<head> <!-- James Rausch, Alex Rotteveel -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Service Explorer</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+       body {
+            font-family: 'Montserrat', sans-serif;
+            background-color: #f8f8f7;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            /*padding-top: 50px;*/
+            justify-content: flex-start; /* Aligns content to the top */
+            padding-top: 70px;
+        }
+
+        .service-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+            width: calc(100% - 40px); /* Subtract the total horizontal padding from 100% width */
+            margin: 20px; /* Adjust margin as needed */
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .service-instance {
+            padding: 20px;
+            background-color: #ffffff;
+            border: none;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .service-instance h2 {
+            margin: 0;
+            color: #333;
+            font-size: 1.2em;
+        }
+
+        .service-instance button {
+            background-color: #e1e1e1;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .service-instance button:hover {
+            background-color: #d1d1d1;
+        }
+
+        .top-toolbar {
+            width: 100%;
+            background-color: #ffffff;
+            padding: 10px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-sizing: border-box;
+        }
+
+        .toolbar-button {
+            background-color: #e1e1e1;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-right: 10px; /* Adds margin to the right of each button */
+        }
+
+        .toolbar-button:last-child {
+            background-color: #e1e1e1;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            margin-right: 10px; /* Removes margin for the last button to align it to the edge */
+        }   
+
+        .popup {
+            display: none; /* Hidden by default */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: auto; /* Takes as much width as needed, up to max-width */
+            max-width: 400px;
+            background-color: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 25px;
+        }
+
+        .popup-content {
+            text-align: center;
+            color: #333;
+        }
+
+        /* Add a maximum height and overflow property if content is too large */
+        .popup-content {
+            max-height: 80vh; /* Adjust to your preference, 80% of the viewport height */
+            overflow-y: auto; /* Allows scrolling within the popup if content is too tall */
+        }
+
+
+        .toolbar {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            cursor: pointer;
+            color: #007bff;
+            font-size: 24px;
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 40px;
+            right: 10px;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .dropdown-item {
+            padding: 10px;
+            text-align: right;
+            text-decoration: none;
+            display: block;
+            color: #000;
+        }
+
+        .dropdown-item:hover {
+            background-color: #f0f0f0;
+        }
+        .add-server-popup {
+            border: 1px solid #ddd;
+            padding: 10px;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+
+        .add-server-popup .popup-content {
+            margin-top: 10px;
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: auto;
+            max-width: 400px;
+            background-color: #fff;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            padding: 25px;
+        }
+
+        .popup-content {
+            text-align: center;
+            color: #333;
+        }
+
+        .server-info {
+            text-align: left;
+            margin: 20px 0;
+            background-color: #f5f5f7;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .close-popup-button {
+            background-color: #e1e1e1;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 16px;
+            margin-top: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            display: block;
+            margin: 0 auto; /* Center the button horizontally */
+            text-align: center;
+        }
+
+        .close-popup-button:hover {
+            background-color: #0051a8;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* This will center-align the buttons vertically */
+            margin-top: 10px;
+        }
+
+        .action-button {
+            /* Your existing styles for buttons... */
+            margin-bottom: 5px; /* Add space between buttons */
+            width: 80%; 
+            margin: 0 auto;/* Set a specific width or use padding to control button width */
+        }
+       
+    </style>
+</head>
+<body>
+    
+    <div class="top-toolbar">
+        <div>AWS Explorer</div>
+        <div>
+            <button class="toolbar-button" id="addServerButton" >Add</button>
+            <button class="toolbar-button" onclick="performLogout()">Logout</button>
+            <div class="region-selector"> 
+                <select id="regionDropdown">
+                    <option value="all">All Regions</option>
+                    <option value="us-east-1">US East (N. Virginia)</option>
+                    <option value="eu-west-1">EU (Ireland)</option>
+                    <option value="us-east-2">US East (Ohio)</option>
+                    <option value="us-west-1">US West (N. California)</option>
+                    <option value="us-west-2">US West (Oregon)</option>
+                    <option value="af-south-1">Africa (Cape Town)</option>
+                    <option value="ap-east-1">Asia Pacific (Hong Kong)</option>
+                    <option value="ap-south-1">Asia Pacific (Mumbai)</option>
+                    <option value="ap-northeast-3">Asia Pacific (Osaka)</option>
+                    <option value="ap-northeast-2">Asia Pacific (Seoul)</option>
+                    <option value="ap-southeast-1">Asia Pacific (Singapore)</option>
+                    <option value="ap-southeast-2">Asia Pacific (Sydney)</option>
+                    <option value="ap-northeast-1">Asia Pacific (Tokyo)</option>
+                    <option value="ca-central-1">Canada (Central)</option>
+                    <option value="eu-central-1">Europe (Frankfurt)</option>
+                    <option value="eu-west-1">EU (Ireland)</option>
+                    <option value="eu-west-2">Europe (London)</option>
+                    <option value="eu-south-1">Europe (Milan)</option>
+                    <option value="eu-west-3">Europe (Paris)</option>
+                    <option value="eu-north-1">Europe (Stockholm)</option>
+                    <option value="me-south-1">Middle East (Bahrain)</option>
+                    <option value="sa-east-1">South America (São Paulo)</option>
+                </select>
+                </div>
+        </div>
+    </div>
+    
+    <div class="service-grid" id="serviceGrid">
+       <!-- Server instances will be added dynamically -->
+    </div>
+
+    <!-- Template for service instances -->
+    <template id="service-instance-template">
+        <div class="service-instance">
+            <h2></h2>
+            <button class="action-button delete-button">Delete Bucket</button>
+            <button class="action-button merge-button">Merge Bucket</button>
+            <button class="action-button merge-into-button" style="display: none;">Merge Into Bucket</button>
+        </div>
+    </template>
+
+    <div class="popup" id="popup">
+        <div class="popup-content" id="popContent">
+            <!-- James Rausch -->
+            <h2>Server Information</h2>
+            <p id="serverInfo">Loading...</p>
+           
+    
+            <button class="close-popup-button" id="closePopup">Close</button>
+            
+        </div>
+    </div>
+
+    <div class="popup" id="addServerPopup">
+        <div class="popup-content">
+            <h2>Add Server</h2>
+            <input type="text" id="serverNameInput" placeholder="Enter server name" maxlength="64" pattern="[a-z]*">
+            <button id="submitServerName">Add</button>
+            <button id="closeAddServerPopup">Close</button>
+        </div>
+    </div>
+
+    <script>
+       
+       var ServerContentsLabel = false;
+       var buttons = [];
+       var mergeState = {};
+        const serviceGrid = document.getElementById("serviceGrid");
+        const popup = document.getElementById("popup");
+        const closePopupButton = document.getElementById("closePopup");
+        const toolbar = document.getElementById("toolbar");
+        const dropdown = document.getElementById("dropdown");
+
+        getSessionDataForService();
+
+        
+        function getSessionDataForService(region = 'all') {
+            console.log("in getSessionDataForService");
+            $.ajax({
+            url: '/getSessionData',
+            method: 'GET',
+
+            }).done(function(response) {
+                console.log("calling fetchserver from getsessiondataforservice")
+                fetchServerData(response, region);
+            }).fail(function(jqXHR, textStatus, errorThrown) {
+                console.error('Error:', textStatus, errorThrown);
+            })
+        }
+        
+        function fetchServerData(sessionData, region = 'all') {
+            console.log("in fetchServerData");
+            let resultSet = sessionData.results;
+        
+            for(let i = 0; i < resultSet.length; i++) {
+                fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/getBuckets?account=${resultSet[i].account_id}&role=${resultSet[i].role_name}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (region === 'all') {
+                        data = JSON.parse(data.body);
+                        console.log("calling displayservers from fetchServerData")
+                        displayServers(data, resultSet);
+                    } else {
+                        const filteredData = data.filter(server => server.REGION === region);
+                        displayServers(filteredData, resultSet);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+            }
+        }
+
+        
+        function displayServers(servers, resultSet) {
+            const container = document.getElementById('serviceGrid');
+            const template = document.getElementById('service-instance-template').content;
+            const buttonsToShow = []; // Array to hold all mergeIntoButtons for showing/hiding
+
+            servers.forEach(server => {
+                const clone = template.cloneNode(true);
+                clone.querySelector('h2').textContent = server.BucketName;
+                const serviceInstance = clone.querySelector('.service-instance');
+
+                // Delete Button
+                const deleteButton = clone.querySelector('.delete-button');
+                deleteButton.addEventListener('click', (event) => {
+                    deleteBucket(server.BucketName);
+                    event.stopPropagation();
+                });
+
+                // Merge Button
+                const mergeButton = clone.querySelector('.merge-button');
+                mergeButton.addEventListener('click', (event) => {
+                    buttonsToShow.forEach(btn => btn.style.display = 'block'); // Show all mergeIntoButtons
+                    event.stopPropagation();
+                });
+
+                // Merge Into Button
+                const mergeIntoButton = clone.querySelector('.merge-into-button');
+                mergeIntoButton.textContent = "Merge Into Bucket";
+                mergeIntoButton.style.display = "none"; // Hidden by default
+                mergeIntoButton.addEventListener('click', (event) => {
+                    buttonsToShow.forEach(btn => btn.style.display = 'none'); // Hide all mergeIntoButtons 
+                    fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/mergeBuckets?bucket=${server.BucketName}&account=${server.ACCOUNT_ID}&role=${server.ROLE_NAME}&bucket2=${mergeState.bucket2}&account2=${mergeState.account2}&role2=${mergeState.role2}`, {
+                        method: 'POST'
+                    }).then(response => response.json())
+                    .then(data => console.log(data))
+                    .catch(error => console.error('Error:', error));
+                    mergeState = {};
+                    event.stopPropagation();
+                });
+
+                // Only append the mergeIntoButton if it meets the condition
+                if(server.ACCOUNT_ID === resultSet[0].account_id) {
+                    serviceInstance.appendChild(mergeIntoButton);
+                    buttonsToShow.push(mergeIntoButton); // Add to the array for showing/hiding later
+                }
+
+                // Clicking the service instance outside the buttons shows popup
+                serviceInstance.addEventListener("click", () => showPopup(server));
+
+                container.appendChild(clone);
+            });
+        }
+        
+        function deleteBucket(bucketName) {
+            const endpoint = 'https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers/delete';
+          
+            fetch(`${endpoint}?bucketName=${(bucketName)}`, {
+                method: 'POST', // Set the method to POST
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Bucket deleted:', data);
+                document.location.reload(true);
+            })
+            .catch(error => {console.error('Error:', error)
+                document.location.reload(true);});
+        }
+
+        
+       function showPopup(server) {
+            const popup = document.getElementById("popup");
+            const serverInfo = document.getElementById("serverInfo");
+            popup.style.display = "flex"; // Change to flex to center the popup content
+
+            serverInfo.innerHTML = `
+                <div><strong>Bucket Name:</strong> ${server.BucketName}</div>
+                <div><strong>ARN:</strong> ${server.ARN}</div>
+                <div><strong>Region:</strong> ${server.REGION}</div>
+            `;
+
+            if (!ServerContentsLabel) {
+                const serviceContextLink = document.createElement("a");
+                serviceContextLink.href = `/ServiceContext?bucket_owner_id=${server.ACCOUNT_ID}&bucket_name=${server.BucketName}&bucket_owner_role=${server.ROLE_NAME}`;
+                serviceContextLink.classList.add("service-context-link");
+                serviceContextLink.textContent = "Server Contents";
+                serverInfo.appendChild(serviceContextLink);
+                ServerContentsLabel = true;
+            }
+        }
+        
+        closePopupButton.addEventListener("click", () => {
+            popup.style.display = "none";
+        });
+
+        document.getElementById('regionDropdown').addEventListener('change', function() {
+            const selectedRegion = this.value;
+            serviceGrid.innerHTML = '';
+            getSessionDataForService(selectedRegion);
+        });
+
+        function displayContents(files) {
+            const contentArea = document.getElementById('content-area');
+            files.forEach(file => {
+                const div = document.createElement('div');
+                div.textContent = file; // Or create an <a> tag if files are downloadable URLs
+                contentArea.appendChild(div);
+            });
+        }
+
+        document.getElementById('addServerButton').addEventListener('click', function() {
+            document.getElementById('addServerPopup').style.display = 'block';
+        });
+
+        document.getElementById('closeAddServerPopup').addEventListener('click', function() {
+            document.getElementById('addServerPopup').style.display = 'none';
+        });
+
+        document.getElementById('submitServerName').addEventListener('click', function() {
+            const serverName = document.getElementById('serverNameInput').value;
+            //James Rausch
+            // Check if server name is in lowercase and less than 64 characters
+            if (serverName.match(/^[a-z]{1,64}$/)) { //regex to check if a-z and under 64 characters.
+                // Send server name to the endpoint
+                fetch(`https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers/add?bucketName=${serverName}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        console.log("Server added:", data);
+                        // Close the popup and refresh server list
+                        document.getElementById('addServerPopup').style.display = 'none';
+                        document.location.reload(true);
+            
+                    })
+                    .catch(error => {console.error('Error:', error), document.location.reload(true)});
+            } else {
+                alert("Server name must be lowercase and less than 64 characters.");
+            }
+        });
+
+
+        //Varun Ravi Kumar
+        function performLogout() {
+            fetch('/logout', {
+                method: 'POST',
+            })
+            .then(response => {
+                if (response.redirected) {
+                    window.location.href = response.url;
+                } else {
+                    console.error('Logout failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error during logout:', error);
+            });
+        }
+
+    </script>
