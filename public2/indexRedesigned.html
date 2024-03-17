@@ -274,7 +274,7 @@
     <template id="service-instance-template">
         <div class="service-instance">
             <h2></h2>
-            <button class="action-button delete-button">Delete Bucket</button>
+            <button class="action-button delete-button" style="display: none;">Delete Bucket</button>
             <button class="action-button merge-button">Merge Bucket</button>
             <button class="action-button merge-into-button" style="display: none;">Merge Into Bucket</button>
         </div>
@@ -285,10 +285,8 @@
             <!-- James Rausch -->
             <h2>Server Information</h2>
             <p id="serverInfo">Loading...</p>
-           
-    
+
             <button class="close-popup-button" id="closePopup">Close</button>
-            
         </div>
     </div>
 
@@ -303,9 +301,9 @@
 
     <script>
        
-       var ServerContentsLabel = false;
-       var buttons = [];
-       var mergeState = {};
+        var ServerContentsLabel = false;
+        var buttons = [];
+        var mergeState = {};
         const serviceGrid = document.getElementById("serviceGrid");
         const popup = document.getElementById("popup");
         const closePopupButton = document.getElementById("closePopup");
@@ -361,12 +359,17 @@
                 clone.querySelector('h2').textContent = server.BucketName;
                 const serviceInstance = clone.querySelector('.service-instance');
 
-                // Delete Button
+                //Delete Button
                 const deleteButton = clone.querySelector('.delete-button');
-                deleteButton.addEventListener('click', (event) => {
-                    deleteBucket(server.BucketName);
-                    event.stopPropagation();
-                });
+                    if (server.ACCOUNT_ID === resultSet[0].account_id) {
+                        deleteButton.style.display = "block"; // Show the delete button
+                        deleteButton.addEventListener('click', (event) => {
+                            deleteBucket(server.BucketName);
+                            event.stopPropagation(); // Stop propagation to prevent triggering serviceInstance click
+                        });
+                    } else {
+                        deleteButton.style.display = "none"; // Hide the delete button
+                }
 
                 // Merge Button
                 const mergeButton = clone.querySelector('.merge-button');
