@@ -118,13 +118,11 @@
             text-align: center;
             color: #333;
         }
-
-        /* Add a maximum height and overflow property if content is too large */
+        
         .popup-content {
-            max-height: 80vh; /* Adjust to your preference, 80% of the viewport height */
-            overflow-y: auto; /* Allows scrolling within the popup if content is too tall */
+            max-height: 80vh;
+            overflow-y: auto; 
         }
-
 
         .toolbar {
             position: fixed;
@@ -216,15 +214,14 @@
         .button-group {
             display: flex;
             flex-direction: column;
-            align-items: center; /* This will center-align the buttons vertically */
+            align-items: center;
             margin-top: 10px;
         }
 
         .action-button {
-            /* Your existing styles for buttons... */
-            margin-bottom: 5px; /* Add space between buttons */
+            margin-bottom: 5px; 
             width: 80%; 
-            margin: 0 auto;/* Set a specific width or use padding to control button width */
+            margin: 0 auto;
         }
        
     </style>
@@ -274,7 +271,7 @@
     <template id="service-instance-template">
         <div class="service-instance">
             <h2></h2>
-            <button class="action-button delete-button">Delete Bucket</button>
+            <button class="action-button delete-button" style="display: none;">Delete Bucket</button>
             <button class="action-button merge-button">Merge Bucket</button>
             <button class="action-button merge-into-button" style="display: none;">Merge Into Bucket</button>
         </div>
@@ -305,9 +302,9 @@
     
 
 
-       var ServerContentsLabel = false;
-       var buttons = [];
-       var mergeState = {};
+        var ServerContentsLabel = false;
+        var buttons = [];
+        var mergeState = {};
         const serviceGrid = document.getElementById("serviceGrid");
         const popup = document.getElementById("popup");
         const closePopupButton = document.getElementById("closePopup");
@@ -363,12 +360,17 @@
                 clone.querySelector('h2').textContent = server.BucketName;
                 const serviceInstance = clone.querySelector('.service-instance');
 
-                // Delete Button
+                //Delete Button
                 const deleteButton = clone.querySelector('.delete-button');
-                deleteButton.addEventListener('click', (event) => {
-                    deleteBucket(server.BucketName);
-                    event.stopPropagation();
-                });
+                    if (server.ACCOUNT_ID === resultSet[0].account_id) {
+                        deleteButton.style.display = "block"; // Show the delete button
+                        deleteButton.addEventListener('click', (event) => {
+                            deleteBucket(server.BucketName);
+                            event.stopPropagation(); // Stop propagation to prevent triggering serviceInstance click
+                        });
+                    } else {
+                        deleteButton.style.display = "none"; // Hide the delete button
+                }
 
                 // Merge Button
                 const mergeButton = clone.querySelector('.merge-button');
