@@ -372,7 +372,7 @@
 
                 // Merge Button
                 const mergeButton = clone.querySelector('.merge-button');
-                mergeButton.addEventListener('click', (event) => {
+                    mergeButton.addEventListener('click', (event) => {
                     mergeState.bucket2 = server.BucketName;
                     mergeState.account2 = server.ACCOUNT_ID;
                     mergeState.role2 = server.ROLE_NAME;
@@ -382,18 +382,18 @@
 
                 // Merge Into Button
                 const mergeIntoButton = clone.querySelector('.merge-into-button');
-                mergeIntoButton.textContent = "Merge Into Bucket";
-                mergeIntoButton.style.display = "none"; // Hidden by default
-                mergeIntoButton.addEventListener('click', (event) => {
-                    buttonsToShow.forEach(btn => btn.style.display = 'none'); // Hide all mergeIntoButtons 
-                    fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/mergeBuckets?bucket=${server.BucketName}&account=${server.ACCOUNT_ID}&role=${server.ROLE_NAME}&bucket2=${mergeState.bucket2}&account2=${mergeState.account2}&role2=${mergeState.role2}`, {
-                        method: 'POST'
-                    }).then(response => response.json())
-                    .then(data => console.log(data))
-                    .catch(error => console.error('Error:', error));
-                    mergeState = {};
-                    event.stopPropagation();
-                });
+                    mergeIntoButton.textContent = "Merge Into Bucket";
+                    mergeIntoButton.style.display = "none"; // Hidden by default
+                    mergeIntoButton.addEventListener('click', (event) => {
+                        buttonsToShow.forEach(btn => btn.style.display = 'none'); // Hide all mergeIntoButtons 
+                        fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/mergeBuckets?bucket=${server.BucketName}&account=${server.ACCOUNT_ID}&role=${server.ROLE_NAME}&bucket2=${mergeState.bucket2}&account2=${mergeState.account2}&role2=${mergeState.role2}`, {
+                            method: 'POST'
+                        }).then(response => response.json())
+                        .then(data => console.log(data))
+                        .catch(error => console.error('Error:', error));
+                        mergeState = {};
+                        event.stopPropagation();
+                    });
 
                 // Only append the mergeIntoButton if it meets the condition
                 if(server.ACCOUNT_ID === resultSet[0].account_id) {
@@ -441,7 +441,7 @@
                 serviceContextLink.classList.add("service-context-link");
                 serviceContextLink.textContent = "Server Contents";
                 serverInfo.appendChild(serviceContextLink);
-                ServerContentsLabel = true;
+                //ServerContentsLabel = true;
             }
         }
         
