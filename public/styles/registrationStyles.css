@@ -16,6 +16,16 @@ body, html {
     border-radius: 10px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
   }
+
+  .signup {
+    margin-top: 20px;
+    color: #555;
+  }
+  
+  .signup a {
+    color: #7c4dff;
+    text-decoration: none;
+  }
   
   h1 {
     color: #333;
@@ -23,7 +33,7 @@ body, html {
   }
   
   .register-form label {
-    display: none; /* Hide labels, use placeholders instead */
+    display: none;
   }
   
   .register-form input {
@@ -56,4 +66,18 @@ body, html {
       width: 90%;
       padding: 30px;
     }
-  }  
+  }
+  
+  .account-exists {
+      margin-top: 20px;
+  }
+
+  .account-exists a {
+      color: #4a00e0; /* Use the same color as your button gradient for consistency */
+      text-decoration: none; /* Optional: if you prefer without the underline */
+      transition: color 0.3s ease; /* Smooth color transition for hover state */
+  }
+
+  .account-exists a:hover {
+      color: #8e2de2; /* Lighter shade when hovered for visual feedback */
+  }
