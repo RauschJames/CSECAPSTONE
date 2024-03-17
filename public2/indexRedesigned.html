@@ -1,7 +1,7 @@
-<!-- James Rausch Alex Rotteveel-->
+<!-- James Rausch Alex Rotteveel, Varun Ravi Kumar-->
 <!DOCTYPE html>
 <html lang="en">
-<head> <!-- James Rausch, Alex Rotteveel -->
+<head> <!-- James Rausch, Alex Rotteveel, Varun Ravi Kumar-->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AWS Service Explorer</title>
@@ -302,35 +302,9 @@
     </div>
 
     <script>
-       document.getElementById('submitServerName').addEventListener('click', function() {
-    const serverName = document.getElementById('serverNameInput').value;
-    if (serverName.match(/^[a-z]{1,64}$/)) { 
-        
-        fetch(`ADDENDPOINTFROMALEX`, {
-            method: 'POST',
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Server added:", data);
-   
-            addServerToUI(serverName);
+    
 
-            document.getElementById('addServerPopup').style.display = 'none';
-        })
-        .catch(error => console.error('Error:', error));
-    } else {
-        alert("Server name must be lowercase and less than 64 characters.");
-    }
-});
 
-function addServerToUI(serverName) {
-    const container = document.getElementById('serviceGrid');
-    const template = document.getElementById('service-instance-template').content.cloneNode(true);
-
-    template.querySelector('h2').textContent = serverName;
-
-    container.appendChild(template);
-}
        var ServerContentsLabel = false;
        var buttons = [];
        var mergeState = {};
@@ -399,6 +373,9 @@ function addServerToUI(serverName) {
                 // Merge Button
                 const mergeButton = clone.querySelector('.merge-button');
                 mergeButton.addEventListener('click', (event) => {
+                    mergeState.bucket2 = server.BucketName;
+                    mergeState.account2 = server.ACCOUNT_ID;
+                    mergeState.role2 = server.ROLE_NAME;
                     buttonsToShow.forEach(btn => btn.style.display = 'block'); // Show all mergeIntoButtons
                     event.stopPropagation();
                 });
@@ -515,6 +492,36 @@ function addServerToUI(serverName) {
                 alert("Server name must be lowercase and less than 64 characters.");
             }
         });
+
+        function addServerToUI(serverName) {
+            const container = document.getElementById('serviceGrid');
+            const template = document.getElementById('service-instance-template').content.cloneNode(true);
+
+            template.querySelector('h2').textContent = serverName;
+
+            container.appendChild(template);
+        }
+
+        document.getElementById('submitServerName').addEventListener('click', function() {
+        const serverName = document.getElementById('serverNameInput').value;
+        if (serverName.match(/^[a-z]{1,64}$/)) { 
+            
+            fetch(`ADDENDPOINTFROMALEX`, {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Server added:", data);
+    
+                addServerToUI(serverName);
+
+                document.getElementById('addServerPopup').style.display = 'none';
+            })
+            .catch(error => console.error('Error:', error));
+        } else {
+            alert("Server name must be lowercase and less than 64 characters.");
+        }
+    });
 
 
         //Varun Ravi Kumar
