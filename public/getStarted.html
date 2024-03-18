@@ -4,136 +4,106 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Get Started Guide</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 0;
-            background: #f4f4f4;
-        }
-        .container {
-            background: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-        .back-button {
-            margin-bottom: 20px;
-            padding: 10px;
-            background: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .step {
-            margin-bottom: 20px;
-        }
-        .step img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 5px;
-        }
-        .step-header {
-            font-size: 24px;
-            margin: 20px 0;
-        }
-        .line {
-            border-bottom: 2px solid #eee;
-            margin: 20px 0;
-        }
-    </style>
+    <title>Get Started Tutorial</title>
+    <link rel="stylesheet" href="styles/getStartedStyles.css">
 </head>
 <body>
 
-<div class="container">
-    <h1>Get Started Here!</h1>
-    <h2>It's important that you follow these steps BEFORE you create an account with our service.</h2>
+<div class="tutorial-container">
+    <h1>Getting Started with Our Service</h1>
     
-    <!-- Step 1-->
+    <!-- Step 1 -->
     <div class="step">
-        <div class="step-header">Step 1</div>
-        <img src="GetStartedImages/photo1.jpg" alt="Step 1 Image">
-        <p>Go to your Amazon Web Services Console Home. Once there, navigate to IAM/Search up IAM.</p>
+        <img src="GetStartedImages/photo1.jpg" alt="Step 1 Image" class="step-image">
+        <div class="step-description">
+            <h2>Step 1: IAM</h2>
+            <p>Go to your Amazon Web Services Console Home. Once there, navigate to IAM/Search up IAM.</p>
+        </div>
     </div>
-    <div class="line"></div>
-    <!-- Repeat the step div for each step in your guide -->
 
     <!-- Step 2-->
     <div class="step">
-        <div class="step-header">Step 2</div>
-        <img src="GetStartedImages/photo2.jpg" alt="Step 2 Image">
-        <p>In IAM, click on Roles under Access Management.</p>
+        <img src="GetStartedImages/photo2.jpg" alt="Step 2 Image" class="step-image">
+        <div class="step-description-even">
+            <h2>Step 2: Finding Roles</h2>
+            <p>In IAM, click on Roles under Access Management.</p>
+        </div>
     </div>
-    <div class="line"></div>
 
     <!-- Step 3-->
     <div class="step">
-        <div class="step-header">Step 3</div>
-        <img src="GetStartedImages/photo3.jpg" alt="Step 3 Image">
-        <p>CLick on the Create Role button.</p>
+        <img src="GetStartedImages/photo3.jpg" alt="Step 1 Image" class="step-image">
+        <div class="step-description">
+            <h2>Step 3: Setting up a New Role</h2>
+            <p>Click on the Create Role button.</p>
+        </div>
     </div>
-    <div class="line"></div>
 
-    <!-- Step 4-->
+    <!-- Step 4 -->
     <div class="step">
-        <div class="step-header">Step 4</div>
-        <img src="GetStartedImages/photo4.png" alt="Step 4 Image">
-        <p>Select AWS account as Trusted Entity Type.</p>
+        <img src="GetStartedImages/photo4.png" alt="Step 4 Image" class="step-image">
+        <div class="step-description-even">
+            <h2>Step 2: Trusted Entity Type</h2>
+            <p>Select AWS account as Trusted Entity Type.</p>
+        </div>
     </div>
-    <div class="line"></div>
 
-    <!-- Step 5 -->
+    <!-- Step 5-->
     <div class="step">
-        <div class="step-header">Step 5</div>
-        <img src="GetStartedImages/photo5.png" alt="Step 5 Image">
-        <p>Select 'Another AWS Account' and type in 536394966329.</p>
+        <img src="GetStartedImages/photo5.png" alt="Step 5 Image" class="step-image">
+        <div class="step-description">
+            <h2>Step 5: Filling out the Trusted Entity Type</h2>
+            <p>Select 'Another AWS Account' and type in 536394966329.</p>
+        </div>
     </div>
-    <div class="line"></div>
 
-    <!-- Step 6 -->
+    <!-- Step 6-->
     <div class="step">
-        <div class="step-header">Step 6</div>
-        <img src="GetStartedImages/photo6.png" alt="Step 6 Image">
-        <p>Once those 2 steps are completed, your page should look like this. Press Next. </p>
+        <img src="GetStartedImages/photo4.png" alt="Step 4 Image" class="step-image">
+        <div class="step-description-even">
+            <h2>Step 6</h2>
+            <p>Once those 2 steps are completed, your page should look like this. Press Next.</p>
+        </div>
     </div>
-    <div class="line"></div>
 
-    <!-- Step 7 -->
+    <!-- Step 7-->
     <div class="step">
-        <div class="step-header">Step 7</div>
-        <img src="GetStartedImages/photo7.png" alt="Step 7 Image">
-        <p>Select the 'AmazonS3FullAccess' permission box and press Next.</p>
+        <img src="GetStartedImages/photo7.png" alt="Step 7 Image" class="step-image">
+        <div class="step-description">
+            <h2>Step 7: Setting up Permissions</h2>
+            <p>Select the 'AmazonS3FullAccess' permission box and press Next.</p>
+        </div>
     </div>
-    <div class="line"></div>
 
-    <!-- Step 8 -->
+    <!-- Step 8-->
     <div class="step">
-        <div class="step-header">Step 8</div>
-        <img src="GetStartedImages/photo8.png" alt="Step 8 Image">
-        <p>Create a meaningful name for the role and make sure you remember it/write it down somewhere. Note: The role name you create is case-sensitive.</p>
+        <img src="GetStartedImages/photo8.png" alt="Step 8 Image" class="step-image">
+        <div class="step-description-even">
+            <h2>Step 8: Finishing up the Custom Role Setup</h2>
+            <p>Create a meaningful name for the role and make sure you remember it/write it down somewhere. Note: The role name you create is case-sensitive.</p>
+        </div>
     </div>
-    <div class="line"></div>
 
-    <!-- Step 9 -->
+    <!-- Step 9-->
     <div class="step">
-        <div class="step-header">Step 9</div>
-        <img src="GetStartedImages/photo9.png" alt="Step 9 Image">
-        <p>Make sure that the add permission section and the tag section look like this. You don't need to add any tags.</p>
+        <img src="GetStartedImages/photo9.png" alt="Step 9 Image" class="step-image">
+        <div class="step-description">
+            <h2>Step 9: Finishing up the Custom Role Setup</h2>
+            <p>Make sure that the add permission section and the tag section look like this. You don't need to add any tags.</p>
+        </div>
     </div>
-    <div class="line"></div>
 
-    <!-- Step 10 -->
+    <!-- Step 10-->
     <div class="step">
-        <div class="step-header">Step 10</div>
-        <img src="GetStartedImages/photo10.png" alt="Step 10 Image">
-        <p>After you have completed the previous steps, you can head on over and register with our service. As seen in the example, fill out the fields with your own values.
-            Assuming you named your role from Step 8 as 'awsRole' as seen in the example, it is critical that you write the same name down. Note: Our application and AWS is case-sensitive so it's important that you write down your role name as you see it</p>
+        <img src="GetStartedImages/photo10.png" alt="Step 10 Image" class="step-image">
+        <div class="step-description-even">
+            <h2>Step 10: Log Back In</h2>
+            <p>After you have completed the previous steps, you can head on over and register with our service. As seen in the example, fill out the fields with your own values.
+                Assuming you named your role from Step 8 as 'awsRole' as seen in the example, it is critical that you write the same name down. Note: Our application and AWS is case-sensitive so it's important that you write down your role name as you see it</p>
+        </div>
     </div>
-    <div class="line"></div>
 
-    <button onclick="window.location.href='/'">Back to Login</button>
+    <button onclick="window.history.back()" class="back-button">Back to the Login Page</button>
     
 </div>
 
