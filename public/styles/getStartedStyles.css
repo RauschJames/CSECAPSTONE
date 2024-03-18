@@ -1,0 +1,94 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+    background: #fff;
+    color: #333;
+    line-height: 1.6;
+}
+
+.tutorial-container {
+    max-width: auto;
+    padding: 40px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.tutorial-container h1 {
+    margin-bottom: 50px;
+}
+
+
+.step:nth-child(even) {
+    flex-direction: row-reverse;
+}
+
+.step {
+    display: flex;
+    align-items: center; 
+    justify-content: space-between; 
+    margin-bottom: 100px;
+}
+
+.step-image {
+    flex: 0 0 60%; 
+    max-width: 60%; 
+    height: auto;
+    border-radius: 5px;
+    margin-left: auto; 
+}
+
+.step-description {
+    flex: 1; 
+    text-align: left;
+    padding-right: 40px;
+}
+
+.step-description-even {
+    flex: 1; 
+    text-align: right;
+    padding-right: 40px;
+}
+
+.back-button {
+    width: 80%;
+    padding: 10px;
+    margin-top: 20px;
+    border: none;
+    color: white;
+    background-image: linear-gradient(to right, #8e2de2, #4a00e0);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: opacity 0.3s ease;
+}
+
+.back-button:hover {
+    background-color: #0056b3;
+}
+
+.step-description h2 {
+    font-size: 24px;
+    color: #000;
+}
+
+.step-description p {
+    font-size: 16px;
+    color: #666;
+}
+
+@media (max-width: 768px) {
+    .step {
+        flex-direction: column;
+    }
+
+    .step-image {
+        width: 100%;
+        height: 200px;
+        margin-bottom: 20px;
+    }
+
+    .step-description {
+        width: 100%;
+    }
+}
