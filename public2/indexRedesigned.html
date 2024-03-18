@@ -231,6 +231,8 @@
     <div class="top-toolbar">
         <div>AWS Explorer</div>
         <div>
+            <button class="toolbar-button" id="swapRegionButton">Swap Region</button>
+            <button class="toolbar-button" id="changeNameButton">Change Name</button>
             <button class="toolbar-button" id="addServerButton" >Add</button>
             <button class="toolbar-button" onclick="performLogout()">Logout</button>
             <div class="region-selector"> 
@@ -276,6 +278,25 @@
             <button class="action-button merge-into-button" style="display: none;">Merge Into Bucket</button>
         </div>
     </template>
+    <!-- Popup for Swap Region -->
+<div class="popup" id="swapRegionPopup">
+    <div class="popup-content">
+        <h2>Swap Region</h2>
+        <input type="text" id="regionInput" placeholder="Enter new region" maxlength="64">
+        <button id="submitRegionChange">Swap</button>
+        <button id="closeSwapRegionPopup">Close</button>
+    </div>
+</div>
+
+<!-- Popup for Change Name -->
+<div class="popup" id="changeNamePopup">
+    <div class="popup-content">
+        <h2>Change Name</h2>
+        <input type="text" id="newNameInput" placeholder="Enter new name" maxlength="64">
+        <button id="submitNameChange">Change</button>
+        <button id="closeChangeNamePopup">Close</button>
+    </div>
+</div>
 
     <div class="popup" id="popup">
         <div class="popup-content" id="popContent">
@@ -299,7 +320,22 @@
     </div>
 
     <script>
-    
+    document.getElementById('swapRegionButton').addEventListener('click', function() {
+    document.getElementById('swapRegionPopup').style.display = 'block';
+});
+
+document.getElementById('closeSwapRegionPopup').addEventListener('click', function() {
+    document.getElementById('swapRegionPopup').style.display = 'none';
+});
+
+document.getElementById('changeNameButton').addEventListener('click', function() {
+    document.getElementById('changeNamePopup').style.display = 'block';
+});
+
+document.getElementById('closeChangeNamePopup').addEventListener('click', function() {
+    document.getElementById('changeNamePopup').style.display = 'none';
+});
+
 
 
         var ServerContentsLabel = false;
@@ -494,7 +530,17 @@
                 alert("Server name must be lowercase and less than 64 characters.");
             }
         });
+document.getElementById('submitRegionChange').addEventListener('click', function() {
+    const newRegion = document.getElementById('regionInput').value;
+    // ADD SWAP REGION API CALL FROM ALEX AWS
+    document.getElementById('swapRegionPopup').style.display = 'none';
+});
 
+document.getElementById('submitNameChange').addEventListener('click', function() {
+    const newName = document.getElementById('newNameInput').value;
+    // ADD CHANGE NAME API CALL FROM ALEX.AWS
+    document.getElementById('changeNamePopup').style.display = 'none';
+});
         function addServerToUI(serverName) {
             const container = document.getElementById('serviceGrid');
             const template = document.getElementById('service-instance-template').content.cloneNode(true);
