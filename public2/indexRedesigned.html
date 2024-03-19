@@ -430,7 +430,9 @@ document.getElementById('closeChangeNamePopup').addEventListener('click', functi
                 .then(response => response.json())
                 .then(data => {
                     data = JSON.parse(data.body);
-                    holdData.push(data);
+                    if(Array.isArray(data) && data.length > 0) {
+                        holdData.push(data);
+                    }
                     console.log("calling displayservers from fetchServerData")
                     console.log(data);
                     displayServers(data, resultSet);
@@ -438,6 +440,7 @@ document.getElementById('closeChangeNamePopup').addEventListener('click', functi
                 .catch(error => console.error('Error:', error));
             }
             globalBucketData = holdData;
+            console.log(globalBucketData);
         }
 
         
@@ -465,6 +468,7 @@ document.getElementById('closeChangeNamePopup').addEventListener('click', functi
 
                 // Merge Button
                 const mergeButton = clone.querySelector('.merge-button');
+                    console.log("hi");
                     mergeButton.addEventListener('click', (event) => {
                     mergeState.bucket2 = server.BucketName;
                     mergeState.account2 = server.ACCOUNT_ID;
@@ -543,7 +547,7 @@ document.getElementById('closeChangeNamePopup').addEventListener('click', functi
 
         document.getElementById('regionDropdown').addEventListener('change', function() {
             const selectedRegion = this.value;
-            console.log(selectedRegion);
+            console.log(selectedRegion + " hi");
             if(globalBucketData && globalSession) {
                 serviceGrid.innerHTML = '';
                 globalBucketData.forEach(element => {
@@ -553,6 +557,7 @@ document.getElementById('closeChangeNamePopup').addEventListener('click', functi
                         displayServers(filteredData, globalSession);
                     }
                     else {
+                        console.log(element);
                         displayServers(element, globalSession);
                     }
                 });
@@ -577,27 +582,8 @@ document.getElementById('closeChangeNamePopup').addEventListener('click', functi
         });
 
 
-        document.getElementById('submitServerName').addEventListener('click', function() {
-            const serverName = document.getElementById('serverNameInput').value;
-            //James Rausch
-            // Check if server name is in lowercase and less than 64 characters
-            if (serverName.match(/^[a-z]{1,64}$/)) { //regex to check if a-z and under 64 characters.
-                // Send server name to the endpoint
-                fetch(`https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers/add?bucketName=${serverName}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log("Server added:", data);
-                        // Close the popup and refresh server list
-                        document.getElementById('addServerPopup').style.display = 'none';
-                        document.location.reload(true);
-            
-                    })
-                    .catch(error => {console.error('Error:', error), document.location.reload(true)});
-            } else {
-                alert("Server name must be lowercase and less than 64 characters.");
-            }
-        });
-document.getElementById('submitRegionChange').addEventListener('click', function() {
+        
+    document.getElementById('submitRegionChange').addEventListener('click', function() {
     const newRegion = document.getElementById('regionInput').value;
     // ADD SWAP REGION API CALL FROM ALEX AWS
     document.getElementById('swapRegionPopup').style.display = 'none';
