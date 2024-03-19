@@ -447,7 +447,6 @@ document.getElementById('closeChangeNamePopup').addEventListener('click', functi
         function displayServers(servers, resultSet) {
             const container = document.getElementById('serviceGrid');
             const template = document.getElementById('service-instance-template').content;
-            const buttonsToShow = []; // Array to hold all mergeIntoButtons for showing/hiding
 
             servers.forEach(server => {
                 const clone = template.cloneNode(true);
@@ -468,12 +467,13 @@ document.getElementById('closeChangeNamePopup').addEventListener('click', functi
 
                 // Merge Button
                 const mergeButton = clone.querySelector('.merge-button');
-                    console.log("hi");
+                    
                     mergeButton.addEventListener('click', (event) => {
+                    console.log("I am here");
                     mergeState.bucket2 = server.BucketName;
                     mergeState.account2 = server.ACCOUNT_ID;
                     mergeState.role2 = server.ROLE_NAME;
-                    buttonsToShow.forEach(btn => btn.style.display = 'block'); // Show all mergeIntoButtons
+                    buttons.forEach(btn => btn.style.display = 'block'); // Show all mergeIntoButtons
                     event.stopPropagation();
                 });
 
@@ -482,7 +482,7 @@ document.getElementById('closeChangeNamePopup').addEventListener('click', functi
                     mergeIntoButton.textContent = "Merge Into Bucket";
                     mergeIntoButton.style.display = "none"; // Hidden by default
                     mergeIntoButton.addEventListener('click', (event) => {
-                        buttonsToShow.forEach(btn => btn.style.display = 'none'); // Hide all mergeIntoButtons 
+                        buttons.forEach(btn => btn.style.display = 'none'); // Hide all mergeIntoButtons 
                         fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/mergeBuckets?bucket=${server.BucketName}&account=${server.ACCOUNT_ID}&role=${server.ROLE_NAME}&bucket2=${mergeState.bucket2}&account2=${mergeState.account2}&role2=${mergeState.role2}`, {
                             method: 'POST'
                         }).then(response => response.json())
@@ -495,7 +495,7 @@ document.getElementById('closeChangeNamePopup').addEventListener('click', functi
                 // Only append the mergeIntoButton if it meets the condition
                 if(server.ACCOUNT_ID === resultSet[0].account_id) {
                     serviceInstance.appendChild(mergeIntoButton);
-                    buttonsToShow.push(mergeIntoButton); // Add to the array for showing/hiding later
+                    buttons.push(mergeIntoButton); // Add to the array for showing/hiding later
                 }
 
                 // Clicking the service instance outside the buttons shows popup
