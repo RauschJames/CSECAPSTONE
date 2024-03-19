@@ -302,38 +302,13 @@
     </div>
 
     <script>
-       document.getElementById('submitServerName').addEventListener('click', function() {
-    const serverName = document.getElementById('serverNameInput').value;
-    if (serverName.match(/^[a-z]{1,64}$/)) { 
-        
-        fetch(`ADDENDPOINTFROMALEX`, {
-            method: 'POST',
-        })
-        .then(response => response.json())
-        .then(data => {
-            console.log("Server added:", data);
-   
-            addServerToUI(serverName);
 
-            document.getElementById('addServerPopup').style.display = 'none';
-        })
-        .catch(error => console.error('Error:', error));
-    } else {
-        alert("Server name must be lowercase and less than 64 characters.");
-    }
-});
+        var ServerContentsLabel = false;
+        var buttons = [];
+        var mergeState = {};
+        var globalSession = null;
+        var globalBucketData = null;
 
-function addServerToUI(serverName) {
-    const container = document.getElementById('serviceGrid');
-    const template = document.getElementById('service-instance-template').content.cloneNode(true);
-
-    template.querySelector('h2').textContent = serverName;
-
-    container.appendChild(template);
-}
-       var ServerContentsLabel = false;
-       var buttons = [];
-       var mergeState = {};
         const serviceGrid = document.getElementById("serviceGrid");
         const popup = document.getElementById("popup");
         const closePopupButton = document.getElementById("closePopup");
@@ -342,7 +317,60 @@ function addServerToUI(serverName) {
 
         getSessionDataForService();
 
+        document.getElementById('submitServerName').addEventListener('click', function() {
+            const serverName = document.getElementById('serverNameInput').value;
+            document.getElementById('serverNameInput').value = '';
+            if (serverName.match(/^[a-z0-9][a-z0-9-.]{1,61}[a-z0-9]$/)) { 
+                console.log('hi');
+                let sessionState;
+                
+                if(globalSession) {
+                    sessionState = globalSession;
+                }
+                
+                else {
+                    $.ajax({
+                        url: '/getSessionData',
+                        method: 'GET',
+                    }).done(function(response) {
+                        console.log("calling fetchserver from getsessiondataforservice")
+                        sessionState = response.results;
+                    }).fail(function(jqXHR, textStatus, errorThrown) {
+                        console.error('Error:', textStatus, errorThrown);
+                    })
+                }
+
+                fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/addServer?bucket=${serverName}&account=${sessionState[0].account_id}&role=${sessionState[0].role_name}`, {
+                    method: 'POST',
+                })
+                .then(response => response.json())
+                .then(data => {
+                    
+                    console.log("Server added:", data);
+   
+                    let serviceGrid = document.getElementById("serviceGrid");
+                    document.getElementById('addServerPopup').style.display = 'none';
+                    
+                    serviceGrid.innerHTML = '';
+                    
+                    fetchServerData(sessionState, 'all');
+                })
+                .catch(error => console.error('Error:', error));
+            } else {
+                console.log('here')
+                alert("Server name must be lowercase and less than 64 characters.");
+            }
+        });
         
+        function addServerToUI(serverName) {
+            const container = document.getElementById('serviceGrid');
+            const template = document.getElementById('service-instance-template').content.cloneNode(true);
+
+            template.querySelector('h2').textContent = serverName;
+
+            container.appendChild(template);
+        }
+
         function getSessionDataForService(region = 'all') {
             console.log("in getSessionDataForService");
             $.ajax({
@@ -351,31 +379,30 @@ function addServerToUI(serverName) {
 
             }).done(function(response) {
                 console.log("calling fetchserver from getsessiondataforservice")
-                fetchServerData(response, region);
+                globalSession = response.results;
+                fetchServerData(globalSession, region);
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 console.error('Error:', textStatus, errorThrown);
             })
         }
         
-        function fetchServerData(sessionData, region = 'all') {
+        async function fetchServerData(resultSet, region = 'all') {
             console.log("in fetchServerData");
-            let resultSet = sessionData.results;
-        
+            let holdData = [];
+
             for(let i = 0; i < resultSet.length; i++) {
-                fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/getBuckets?account=${resultSet[i].account_id}&role=${resultSet[i].role_name}`)
+                await fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/getBuckets?account=${resultSet[i].account_id}&role=${resultSet[i].role_name}`)
                 .then(response => response.json())
                 .then(data => {
-                    if (region === 'all') {
-                        data = JSON.parse(data.body);
-                        console.log("calling displayservers from fetchServerData")
-                        displayServers(data, resultSet);
-                    } else {
-                        const filteredData = data.filter(server => server.REGION === region);
-                        displayServers(filteredData, resultSet);
-                    }
+                    data = JSON.parse(data.body);
+                    holdData.push(data);
+                    console.log("calling displayservers from fetchServerData")
+                    console.log(data);
+                    displayServers(data, resultSet);
                 })
                 .catch(error => console.error('Error:', error));
             }
+            globalBucketData = holdData;
         }
 
         
@@ -464,7 +491,6 @@ function addServerToUI(serverName) {
                 serviceContextLink.classList.add("service-context-link");
                 serviceContextLink.textContent = "Server Contents";
                 serverInfo.appendChild(serviceContextLink);
-                ServerContentsLabel = true;
             }
         }
         
@@ -474,8 +500,20 @@ function addServerToUI(serverName) {
 
         document.getElementById('regionDropdown').addEventListener('change', function() {
             const selectedRegion = this.value;
-            serviceGrid.innerHTML = '';
-            getSessionDataForService(selectedRegion);
+            console.log(selectedRegion);
+            if(globalBucketData && globalSession) {
+                serviceGrid.innerHTML = '';
+                globalBucketData.forEach(element => {
+                    if(selectedRegion !== "all") {
+                        let filteredData = element.filter(server => server.REGION === selectedRegion);
+                        console.log(filteredData);
+                        displayServers(filteredData, globalSession);
+                    }
+                    else {
+                        displayServers(element, globalSession);
+                    }
+                });
+            }
         });
 
         function displayContents(files) {
@@ -494,28 +532,6 @@ function addServerToUI(serverName) {
         document.getElementById('closeAddServerPopup').addEventListener('click', function() {
             document.getElementById('addServerPopup').style.display = 'none';
         });
-
-        document.getElementById('submitServerName').addEventListener('click', function() {
-            const serverName = document.getElementById('serverNameInput').value;
-            //James Rausch
-            // Check if server name is in lowercase and less than 64 characters
-            if (serverName.match(/^[a-z]{1,64}$/)) { //regex to check if a-z and under 64 characters.
-                // Send server name to the endpoint
-                fetch(`https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers/add?bucketName=${serverName}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        console.log("Server added:", data);
-                        // Close the popup and refresh server list
-                        document.getElementById('addServerPopup').style.display = 'none';
-                        document.location.reload(true);
-            
-                    })
-                    .catch(error => {console.error('Error:', error), document.location.reload(true)});
-            } else {
-                alert("Server name must be lowercase and less than 64 characters.");
-            }
-        });
-
 
         //Varun Ravi Kumar
         function performLogout() {

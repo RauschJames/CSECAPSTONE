@@ -26,7 +26,7 @@
     <h1>Server Contents</h1>
     <button onclick="window.history.back();">Back to Dashboard</button>
     <div id="content-area"></div>
-    <!-- James Rausch  fetchbucketdata -->
+    <!-- Alex Rotteveel, James Rausch  fetchbucketdata -->
     <script>
         function fetchBucketData(bucketData) {
             fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/getBucketData?bucket=${bucketData.bucket_name}&account=${bucketData.bucket_owner_id}&role=${bucketData.bucket_owner_role}`)

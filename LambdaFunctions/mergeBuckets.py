@@ -14,7 +14,11 @@ def get_bucket_region(bucket_name, assumed_role):
     )
     
     response = s3_client.get_bucket_location(Bucket=bucket_name)
-    return response.get('LocationConstraint', 'us-east-1')
+    region = response.get('LocationConstraint')
+    
+    if region is None:
+        return 'us-east-1'
+    return region
 
 def assume_role(account_id, role_name):
     sts_client = boto3.client('sts')
