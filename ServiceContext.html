@@ -7,18 +7,49 @@
     <title>Server Contents</title>
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <style>
-        /* Your existing styles */
-        /* Additional styles for displaying file content on hover */
-        .hover-content {
-            display: none;
-            position: absolute;
-            background-color: #fff;
-            border: 1px solid #ddd;
-            padding: 10px;
-            z-index: 100;
+        body {
+            font-family: Arial, sans-serif;
         }
-        .file:hover .hover-content {
-            display: block;
+        #content-area {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px; /* Buffer around each tile */
+            padding: 10px;
+        }
+        iframe {
+            transition: transform 0.2s; /* Animation */
+        }
+        /* Smaller icons with a buffer */
+        .tile {
+            cursor: pointer;
+            transition: transform 0.2s; /* Animation for scaling */
+        }
+        .tile iframe {
+            width: 100px; /* Smaller width */
+            height: 75px; /* Smaller height */
+            border: 1px solid #ddd; 
+        }
+        /* Style for the popup */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 2; /* Ensure it's above other content */
+            border: 1px solid #ddd;
+            background-color: #fff;
+            padding: 20px;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1; /* Below popup, but above other items */
         }
     </style>
 </head>
@@ -26,11 +57,14 @@
     <h1>Server Contents</h1>
     <button onclick="window.history.back();">Back to Dashboard</button>
     <div id="content-area"></div>
-    <!-- Alex Rotteveel, James Rausch  fetchbucketdata -->
+    
+    <div class="overlay" onclick="closePopup()"></div> <!-- Overlay for popup -->
+    <div class="popup" id="popup"></div> <!-- Popup container -->
+
     <script>
         function fetchBucketData(bucketData) {
             fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/getBucketData?bucket=${bucketData.bucket_name}&account=${bucketData.bucket_owner_id}&role=${bucketData.bucket_owner_role}`)
-                .then(response => response.json())                                                                                                                                                              
+                .then(response => response.json())
                 .then(data => {
                     data = JSON.parse(data.body);
                     displayContents(data) 
@@ -40,31 +74,53 @@
 
         function displayContents(data) {
             const contentArea = document.getElementById('content-area');
-            const ul = document.createElement('ul');
-             
+            
             data.forEach(item => {
+                const tile = document.createElement('div');
+                tile.classList.add('tile');
                 
                 const iframe = document.createElement('iframe');
                 iframe.src = item;
+                iframe.width = '100'; 
+                iframe.height = '75'; 
                 
-                iframe.width = '300';
-                iframe.height = '200';
-              
-                contentArea.appendChild(iframe);
+                tile.appendChild(iframe);
+                contentArea.appendChild(tile);
+                
+                tile.addEventListener('click', () => showPopup(item));
             });
         }
+        
+        function showPopup(itemSrc) {
+            const popup = document.getElementById('popup');
+            const overlay = document.querySelector('.overlay');
+            popup.innerHTML = `<iframe src="${itemSrc}" width="600" height="400"></iframe>`; // Larger size in popup
+            popup.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        function closePopup() {
+            const popup = document.getElementById('popup');
+            const overlay = document.querySelector('.overlay');
+            popup.style.display = 'none';
+            overlay.style.display = 'none';
+            popup.innerHTML = ''; // Clear the popup content
+        }
+
         function getBucketDataForService() {
             $.ajax({
-            url: '/getBucketData',
-            method: 'GET',
-
+                url: '/getBucketData',
+                method: 'GET',
             }).done(function(response) {
                 fetchBucketData(response);
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 console.error('Error:', textStatus, errorThrown);
-            })
+            });
         }
         getBucketDataForService();
+        
+        document.querySelector('.overlay').addEventListener('click', closePopup); // Close popup when overlay is clicked
     </script>
 </body>
 </html>
+
