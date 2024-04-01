@@ -234,6 +234,7 @@
             <button class="toolbar-button" id="swapRegionButton">Swap Region</button>
             <button class="toolbar-button" id="changeNameButton">Change Name</button>
             <button class="toolbar-button" id="addServerButton" >Add</button>
+            <button class="toolbar-button" id="toggleButton" >Show My Items</button>
             <button class="toolbar-button" onclick="performLogout()">Logout</button>
             <div class="region-selector"> 
                 <select id="regionDropdown">
@@ -343,6 +344,7 @@ document.getElementById('closeChangeNamePopup').addEventListener('click', functi
         var mergeState = {};
         var globalSession = null;
         var globalBucketData = null;
+        let showOwnItems = false;
 
         const serviceGrid = document.getElementById("serviceGrid");
         const popup = document.getElementById("popup");
@@ -559,6 +561,27 @@ document.getElementById('closeChangeNamePopup').addEventListener('click', functi
                     else {
                         console.log(element);
                         displayServers(element, globalSession);
+                    }
+                });
+            }
+        });
+
+        document.getElementById('toggleButton').addEventListener('click', function() {
+            showOwnItems = !showOwnItems;
+            this.textContent = showOwnItems ? "Show All Items" : "Show My Items";
+
+            if(globalBucketData && globalSession) {
+                const serviceGrid = document.getElementById('serviceGrid');
+                serviceGrid.innerHTML = '';
+
+                globalBucketData.forEach(bucketArray => {
+                    if (Array.isArray(bucketArray)) {
+                        const dataToDisplay = showOwnItems 
+                            ? bucketArray.filter(server => server.ACCOUNT_ID === globalSession[0].account_id)
+                            : bucketArray;
+                        displayServers(dataToDisplay, globalSession);
+                    } else {
+                        console.error('Expected bucketArray to be an array, but got:', bucketArray);
                     }
                 });
             }
