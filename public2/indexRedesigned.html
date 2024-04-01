@@ -460,8 +460,11 @@ document.getElementById('closeChangeNamePopup').addEventListener('click', functi
                     if (server.ACCOUNT_ID === resultSet[0].account_id) {
                         deleteButton.style.display = "block"; // Show the delete button
                         deleteButton.addEventListener('click', (event) => {
-                            deleteBucket(server.BucketName);
-                            event.stopPropagation(); // Stop propagation to prevent triggering serviceInstance click
+                            if(globalSession) {
+                                sessionState = globalSession;
+                                deleteBucket(server.ACCOUNT_ID, server.ROLE_NAME, server.BucketName, sessionState);
+                                event.stopPropagation(); // Stop propagation to prevent triggering serviceInstance click
+                            }
                         });
                     } else {
                         deleteButton.style.display = "none"; // Hide the delete button
@@ -507,19 +510,21 @@ document.getElementById('closeChangeNamePopup').addEventListener('click', functi
             });
         }
         
-        function deleteBucket(bucketName) {
-            const endpoint = 'https://pk9oj1w0yh.execute-api.us-east-1.amazonaws.com/Test/ListServers/delete';
+        function deleteBucket(accountID, roleName, bucketName, sessionState) {
+            const endpoint = 'https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/deleteBucket';
           
-            fetch(`${endpoint}?bucketName=${(bucketName)}`, {
-                method: 'POST', // Set the method to POST
+            fetch(`${endpoint}?bucket=${bucketName}&account=${accountID}&role=${roleName}`, {
+                method: 'OPTIONS', // Set the method to Delete
             })
             .then(response => response.json())
             .then(data => {
                 console.log('Bucket deleted:', data);
-                document.location.reload(true);
+                serviceGrid.innerHTML = '';
+                fetchServerData(sessionState, 'all');
             })
             .catch(error => {console.error('Error:', error)
-                document.location.reload(true);});
+                console.log(error);
+            });
         }
 
         
