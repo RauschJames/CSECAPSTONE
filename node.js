@@ -74,7 +74,7 @@ app.post('/submit-form', (req, res) => {
         }
     });
     
-    const { account_id, password, passwordAgain, role } = req.body;
+    const { account_id, company_email, password, passwordAgain, role } = req.body;
 
     if(password !== passwordAgain) {
         connection.end((err) => {
@@ -89,11 +89,11 @@ app.post('/submit-form', (req, res) => {
     
     else {
         const insertQuery = `
-            INSERT INTO user_accounts (account_id, password, role_name)
-            VALUES (?, ?, ?)
+            INSERT INTO user_accounts (account_id, password, role_name, company_email)
+            VALUES (?, ?, ?, ?)
             `; 
 
-        const queryValues = [account_id, password, role];
+        const queryValues = [account_id, password, role, company_email];
 
         connection.query(insertQuery, queryValues, (err, results) => {
             if (err) {
