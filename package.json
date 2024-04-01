@@ -4,6 +4,7 @@
     "express-session": "^1.18.0",
     "init": "^0.1.2",
     "mssql": "^10.0.1",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "mail-notifier": "0.5.0"
   }
 }

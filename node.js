@@ -4,6 +4,7 @@ const mysql = require('mysql');
 const path = require('path'); 
 const app = express();
 const session = require('express-session');
+const mailer = require('mail-notifier');
 
 app.use(express.static('public'));
 
@@ -27,6 +28,19 @@ const config = {
     database: 'sql3680058',
     port: 3306
 };
+
+var imap = {
+    user: "alexrotteveel476@gmail.com",
+    password: "jlncjvlbdjszjzjg",
+    host: "imap.gmail.com",
+    port: 993,
+    tls: true,
+    tlsOptions: { rejectUnauthorized: false }
+};
+
+mailer(imap).on('mail',function(mail){
+       console.log(mail);
+}).start();
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'LoginPage.html'));
