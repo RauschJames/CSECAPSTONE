@@ -24,9 +24,9 @@
   </div>
 <script>
     
-    function getMailer(email, callback) {
+    function getMailer(email, account_id, callback) {
       $.ajax({
-          url: '/mailer',
+          url: '/mailer?account_id=${account_id}&company_email=${email}',
           method: 'GET',
           //data: { email: email }, // Pass only email as data in the GET request
       }).done(function(response) {
@@ -41,8 +41,9 @@
       $('#register-button').prop('disabled', true).addClass('button-disabled');
 
       var email = $('#company_email').val();
+      var accountID = $('#account_id').val();
       if (email) { 
-        getMailer(email, function(response) {
+        getMailer(email, accountID, function(response) {
             if (response.isValid) {
                   $('#verify-email').text('Email Verified');
                   $('#registerButton').prop('disabled', true).addClass('button-disabled');
