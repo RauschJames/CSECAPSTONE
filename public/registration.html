@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Registration Page</title>
 <link rel="stylesheet" href="styles/registrationStyles.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
   <div class="register-container">
@@ -13,6 +14,7 @@
     <form class="register-form" action="/submit-form" method="POST">
       <input type="text" id="account_id" name="account_id" placeholder="Account ID" required>
       <input type="text" id="company_email" name="company_email" placeholder="Company Email">
+      <button type="button" id="verify-email" onclick="verifyEmail()">Verify Email</button>
       <input type="password" id="password" name="password" placeholder="Password" required>
       <input type="password" id="passwordAgain" name="passwordAgain" placeholder="Confirm Password" required>
       <input type="text" id="role" name="role" placeholder="AWS Role Name" required>
@@ -20,5 +22,39 @@
     </form>
     <div class="account-exists"><a href="/">Back to Login Page</a></div>
   </div>
-</body>
-</html>
+<script>
+    
+    function getMailer(email, callback) {
+      $.ajax({
+          url: '/mailer',
+          method: 'GET',
+          //data: { email: email }, // Pass only email as data in the GET request
+      }).done(function(response) {
+
+      }).fail(function(jqXHR, textStatus, errorThrown) {
+          console.error('Error:', textStatus, errorThrown);
+      });
+    }
+  
+    function verifyEmail() {
+      $('#verify-email').text('Waiting...').prop('disabled', true);
+      $('#register-button').prop('disabled', true).addClass('button-disabled');
+
+      var email = $('#company_email').val();
+      if (email) { 
+        getMailer(email, function(response) {
+            if (response.isValid) {
+                  $('#verify-email').text('Email Verified');
+                  $('#registerButton').prop('disabled', true).addClass('button-disabled');
+
+              } else {
+                  $('#verify-email').text('Invalid Email, try again');
+              }
+          });
+      } else {
+          alert("Please enter an email address.");
+      }
+    }
+  </script>
+  </body>
+  </html>
