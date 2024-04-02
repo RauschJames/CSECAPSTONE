@@ -72,12 +72,31 @@ body, html {
       margin-top: 20px;
   }
 
+.verify-emailCSS {
+    width: auto;
+    border: none;
+    color: white;
+    background-image: linear-gradient(to right, #8e2de2, #4a00e0);
+    cursor: pointer;
+  }
+
+  #company_email {
+    width: 70%;
+    margin-left: 0;
+    margin-right: auto;
+  }
+
+  .button-disabled {
+    background-image: linear-gradient(to right, #cccccc, #999999);
+    cursor: not-allowed;
+  }
+
   .account-exists a {
-      color: #4a00e0; /* Use the same color as your button gradient for consistency */
-      text-decoration: none; /* Optional: if you prefer without the underline */
-      transition: color 0.3s ease; /* Smooth color transition for hover state */
+      color: #4a00e0; 
+      text-decoration: none; 
+      transition: color 0.3s ease;
   }
 
   .account-exists a:hover {
-      color: #8e2de2; /* Lighter shade when hovered for visual feedback */
+      color: #8e2de2;
   }
