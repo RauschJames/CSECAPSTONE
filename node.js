@@ -22,29 +22,6 @@ app.use((req, res, next) => {
     next();
 });
 
-var transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      user: 'alexrotteveel476@gmail.com',
-      pass: 'jlncjvlbdjszjzjg'
-    }
-});
-
-var mailOptions = {
-    from: 'alexrotteveel476@gmail.com',
-    to: 'alexanderrotteveel@yahoo.com',
-    subject: 'Sending Email using Node.js',
-    text: 'That was easy!'
-};
-
-transporter.sendMail(mailOptions, function(error, info){
-    if (error) {
-      console.log(error);
-    } else {
-      console.log('Email sent: ' + info.response);
-    }
-});
-
 const config = {
     user: 'sql3680058',
     password: 'r713z9gGLf',
@@ -62,13 +39,6 @@ var imap = {
     markSeen: false,
     tlsOptions: { rejectUnauthorized: false }
 };
-
-
-mailer(imap).on('mail',function(mail, isValid){
-    console.log(isValid);
-    console.log(mail);
-    
-}).start("capstone");
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'LoginPage.html'));
@@ -265,6 +235,43 @@ app.get('/getSessionData', (req, res) => {
 });
 
 app.get('/mailer', (req, res) => {
+    
+    function timeoutFunction() {
+        
+        console.log("Timeout function executed!");
+    }
+
+    const timeoutDuration = 5 * 60 * 1000;
+    setTimeout(timeoutFunction, timeoutDuration);
+    
+    var transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: 'alexrotteveel476@gmail.com',
+          pass: 'jlncjvlbdjszjzjg'
+        }
+    });
+    
+    var mailOptions = {
+        from: 'alexrotteveel476@gmail.com',
+        to: 'alexanderrotteveel@yahoo.com',
+        subject: 'Sending Email using Node.js',
+        text: 'That was easy!'
+    };
+    
+    transporter.sendMail(mailOptions, function(error, info){
+        if (error) {
+          console.log(error);
+        } else {
+          console.log('Email sent: ' + info.response);
+        }
+    });
+
+    mailer(imap).on('mail',function(mail, isValid){
+        
+        
+    }).start("capstone");
+
     console.log("in /mailer");
 });
 
