@@ -26,7 +26,7 @@
     
     function getMailer(email, account_id, callback) {
       $.ajax({
-          url: '/mailer?account_id=${account_id}&company_email=${email}',
+          url: `/mailer?account_id=${account_id}&company_email=${email}`,
           method: 'GET',
           //data: { email: email }, // Pass only email as data in the GET request
       }).done(function(response) {

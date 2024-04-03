@@ -236,12 +236,19 @@ app.get('/getSessionData', (req, res) => {
 
 app.get('/mailer', (req, res) => {
     
+    var imapVar = mailer(imap)
+    
+    let account = req.query.account_id;
+    let companyEmail = req.query.company_email;
+    req.session.isValid = false;
+    
     function timeoutFunction() {
-        
+        imapVar.stop();
+        res.json(req.session);
         console.log("Timeout function executed!");
     }
 
-    const timeoutDuration = 5 * 60 * 1000;
+    const timeoutDuration = 10000;
     setTimeout(timeoutFunction, timeoutDuration);
     
     var transporter = nodemailer.createTransport({
@@ -254,9 +261,9 @@ app.get('/mailer', (req, res) => {
     
     var mailOptions = {
         from: 'alexrotteveel476@gmail.com',
-        to: 'alexanderrotteveel@yahoo.com',
-        subject: 'Sending Email using Node.js',
-        text: 'That was easy!'
+        to: companyEmail,
+        subject: 'Validate user',
+        text: 'Verify user with account ID ' + account
     };
     
     transporter.sendMail(mailOptions, function(error, info){
@@ -267,11 +274,15 @@ app.get('/mailer', (req, res) => {
         }
     });
 
-    mailer(imap).on('mail',function(mail, isValid){
-        
-        
-    }).start("capstone");
 
+    imapVar.on('mail',function(mail, isValid){
+        if(isValid && mail.from.length === 1 && mail.from[0].address === companyEmail) {
+            req.session.isValid = true;
+            res.json(req.session);
+           
+        }
+        
+    }).start( "VERIFY", " VALIDATE " + account);
     console.log("in /mailer");
 });
 
