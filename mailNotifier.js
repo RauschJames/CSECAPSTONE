@@ -30,12 +30,12 @@ module.exports = function (opts, customDbg) {
     return new Notifier(opts, customDbg);
 };
 
-Notifier.prototype.start = function (subject) {
+Notifier.prototype.start = function (subject, text) {
     var self = this;
     
 	var q = async.queue(function(task, callback) {
 		self.dbg('process queue ' + task.name);
-		self.scan(callback, subject);
+		self.scan(callback, subject, text);
 	}, 1);	
 
 	// assign a callback
@@ -83,7 +83,7 @@ Notifier.prototype.start = function (subject) {
     return this;
 };
 
-Notifier.prototype.scan = function (callback, subject) {
+Notifier.prototype.scan = function (callback, subject, text) {
     var self = this, search = self.options.search || ['UNSEEN'];
     self.dbg('scanning %s with filter `%s`.', self.options.box,  search);
     self.imap.search(search, function (err, seachResults) {
@@ -112,8 +112,18 @@ Notifier.prototype.scan = function (callback, subject) {
             }); 
             var mp = new MailParser();
             mp.once('end', function (mail) {
-                console.log(mail);
-                if(mail.subject === subject) {
+                
+                let tempString = "";
+                for(let i = 0; i < mail.text.length; i++) {
+                    if(mail.text[i] === '\n') {
+                        break;
+                    }
+                    else {
+                        tempString += mail.text[i];
+                    }
+                }
+
+                if(mail.subject === subject && tempString === text) {
                     isValid = true;
                     self.imap.addFlags(uid, ['\\Seen'], function (err) {
                         if (err) {
@@ -122,11 +132,11 @@ Notifier.prototype.scan = function (callback, subject) {
                             console.log("Marked as read!")
                         }
                     });
+                    mail.uid = uid;
+                    mail.flags = flags;
+                    self.emit('mail', mail, isValid);
+                    self.dbg('found mail '+mail.headers["message-id"]);
                 }
-                mail.uid = uid;
-                mail.flags = flags;
-                self.emit('mail', mail, isValid);
-				self.dbg('found mail '+mail.headers["message-id"]);
             });
             msg.once('body', function (stream, info) {
                 stream.pipe(mp);
