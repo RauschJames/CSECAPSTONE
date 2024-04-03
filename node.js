@@ -248,8 +248,8 @@ app.get('/mailer', (req, res) => {
         console.log("Timeout function executed!");
     }
 
-    const timeoutDuration = 10000;
-    setTimeout(timeoutFunction, timeoutDuration);
+    const timeoutDuration = 180000;
+    var timeout = setTimeout(timeoutFunction, timeoutDuration);
     
     var transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -277,6 +277,7 @@ app.get('/mailer', (req, res) => {
 
     imapVar.on('mail',function(mail, isValid){
         if(isValid && mail.from.length === 1 && mail.from[0].address === companyEmail) {
+            clearTimeout(timeout);
             req.session.isValid = true;
             res.json(req.session);
            

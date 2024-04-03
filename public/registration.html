@@ -18,7 +18,7 @@
       <input type="password" id="password" name="password" placeholder="Password" required>
       <input type="password" id="passwordAgain" name="passwordAgain" placeholder="Confirm Password" required>
       <input type="text" id="role" name="role" placeholder="AWS Role Name" required>
-      <button type="submit" class="register-button" id = "register" style="display: inline-block;">Register</button>
+      <button type="submit" class="register-button" id = "register" style="display: none;">Register</button>
     </form>
     <div class="account-exists"><a href="/">Back to Login Page</a></div>
   </div>
@@ -30,7 +30,7 @@
           method: 'GET',
           //data: { email: email }, // Pass only email as data in the GET request
       }).done(function(response) {
-          
+          callback(response);
       }).fail(function(jqXHR, textStatus, errorThrown) {
           console.error('Error:', textStatus, errorThrown);
       });
@@ -38,8 +38,8 @@
   
     function verifyEmail() {
       $('#verify-email').text('Waiting...').prop('disabled', true);
-      var registerButton = document.getElementById('registerButton');
-      registerButton.style.display = "none";
+      var registerButton = document.getElementById('register');
+      
 
       var email = $('#company_email').val();
       var accountID = $('#account_id').val();
@@ -47,11 +47,10 @@
         getMailer(email, accountID, function(response) {
             if (response.isValid) {
                   $('#verify-email').text('Email Verified');
-                  registerButton.style.display = "block";
+                  registerButton.style.display = "inline-block";
 
               } else {
                   $('#verify-email').text('Invalid Email, try again');
-                  registerButton.style.display = "none";
               }
           });
       } else {
