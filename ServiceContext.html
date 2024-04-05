@@ -74,20 +74,28 @@
 
         function displayContents(data) {
             const contentArea = document.getElementById('content-area');
-            
+
             data.forEach(item => {
                 const tile = document.createElement('div');
                 tile.classList.add('tile');
-                
-                const iframe = document.createElement('iframe');
-                iframe.src = item;
-                iframe.width = '100'; 
-                iframe.height = '75'; 
-                
-                tile.appendChild(iframe);
+
+                 
+                tile.style.border = '1px solid #ccc'; 
+                tile.style.padding = '10px'; 
+                tile.style.marginBottom = '20px'; 
+
+                const objectTag = document.createElement('object');
+                objectTag.setAttribute('data', item.url);
+                console.log(item.contentType);
+                objectTag.setAttribute('type', item.contentType);
+    
+                objectTag.setAttribute('width', '1200'); 
+                objectTag.setAttribute('height', '700');
+
+                objectTag.innerHTML = 'Your browser does not support displaying this object.';
+
+                tile.appendChild(objectTag);
                 contentArea.appendChild(tile);
-                
-                tile.addEventListener('click', () => showPopup(item));
             });
         }
         

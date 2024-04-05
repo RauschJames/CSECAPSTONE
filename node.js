@@ -248,7 +248,7 @@ app.get('/mailer', (req, res) => {
         console.log("Timeout function executed!");
     }
 
-    const timeoutDuration = 180000;
+    const timeoutDuration =  5 * 60 * 1000;
     var timeout = setTimeout(timeoutFunction, timeoutDuration);
     
     var transporter = nodemailer.createTransport({

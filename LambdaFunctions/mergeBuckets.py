@@ -1,4 +1,3 @@
-
 import boto3
 import json
 
@@ -12,65 +11,85 @@ def get_bucket_region(bucket_name, assumed_role):
         aws_secret_access_key=assumed_role['Credentials']['SecretAccessKey'],
         aws_session_token=assumed_role['Credentials']['SessionToken']
     )
-    
+
     response = s3_client.get_bucket_location(Bucket=bucket_name)
-    region = response.get('LocationConstraint')
-    
-    if region is None:
-        return 'us-east-1'
-    return region
+    return response.get('LocationConstraint', 'us-east-1')
 
-def assume_role(account_id, role_name):
-    sts_client = boto3.client('sts')
-    assumed_role = sts_client.assume_role(
-        RoleArn=f'arn:aws:iam::{account_id}:role/{role_name}',
-        RoleSessionName='AssumeRoleSession'
-    )
-    return assumed_role
+def lambda_handler(event, context):
 
-def get_s3_client(assumed_role, region):
-    s3_client = boto3.client('s3',
+    try:
+
+        query_parameters = event.get('multiValueQueryStringParameters', {})
+        bucket_name = query_parameters.get('bucket', {})
+        account_name = query_parameters.get('account', {})
+        role_name = query_parameters.get('role', {})
+
+        sts_client = boto3.client('sts')
+        assumed_role = sts_client.assume_role(
+        RoleArn=f'arn:aws:iam::{account_name}:role/{role_name}',
+        RoleSessionName='AssumedRoleSession')
+
+        s3_region = get_bucket_region(bucket_name, assumed_role)
+        
+        
+        if(s3_region == None):
+            s3_region = 'us-east-1'
+        
+       
+        s3_client = boto3.client('s3',
         aws_access_key_id=assumed_role['Credentials']['AccessKeyId'],
         aws_secret_access_key=assumed_role['Credentials']['SecretAccessKey'],
         aws_session_token=assumed_role['Credentials']['SessionToken'],
-        config=boto3.session.Config(signature_version='s3v4', region_name=region))
-    
-    return s3_client
+        config=boto3.session.Config(signature_version='s3v4', region_name=s3_region))
 
-def lambda_handler(event, context):
-    try:
-        # Extract necessary information from the event
-        query_parameters = event.get('multiValueQueryStringParameters', {})
-        source_bucket = query_parameters.get('bucket2', {})
-        destination_bucket = query_parameters.get('bucket', {})
-        source_account_id = query_parameters.get('account2', {}) 
-        destination_account_id = query_parameters.get('account', {})  
-        role_name_source = query_parameters.get('role2', {})  
-        role_name_destination = query_parameters.get('role', {})  
+        if not bucket_name:
+            raise ValueError("Bucket name not provided in query parameters.")
 
-        source_role = assume_role(source_account_id, role_name_source)
-        source_region = get_bucket_region(source_bucket, source_role)
-        s3_client_source = get_s3_client(source_role, source_region)
+        list_objects_response = s3_client.list_objects_v2(Bucket=bucket_name)
+
+        contents = list_objects_response.get('Contents', [])
         
-        destination_role = assume_role(destination_account_id, role_name_destination)
-        destination_region = get_bucket_region(destination_bucket, destination_role)
-        s3_client_destination = get_s3_client(destination_role, destination_region)
         
-        response = s3_client_source.list_objects_v2(Bucket=source_bucket)
+        
+        object_urls = []
+        
+        
 
-        # Copy each object to the destination bucket
-        for obj in response.get('Contents', []):
-            response = s3_client_source.get_object(Bucket=source_bucket, Key=obj['Key'])
-            object_data = response['Body'].read()
-            s3_client_destination.put_object(Bucket=destination_bucket, Key=obj['Key'], Body=object_data, ContentType=response['ContentType'])
+        for obj in contents:
+            try:
+                url = s3_client.generate_presigned_url(
+                ClientMethod='get_object',
+                Params={'Bucket':bucket_name,'Key':obj['Key']},
+                ExpiresIn=180, 
+                HttpMethod='GET'
+                )
+                
+                metadata_response = s3_client.head_object(Bucket=bucket_name, Key=obj['Key'])
+               
+                
+                object_urls.append({'url': url, 'contentType': metadata_response['ContentType']})
 
+            except Exception as url_error:
+                print(f"Error generating presigned URL for {obj['Key']}: {url_error}")
+
+
+        serialized_urls = json.dumps(object_urls)
+        
+        
         return {
             'statusCode': 200,
-            'body': f"Objects from {source_bucket} copied to {destination_bucket}."
+            'body': serialized_urls
         }
 
+    except ValueError as ve:
+        print(f"ValueError: {ve}")
+        return {
+            'statusCode': 400,
+            'body': json.dumps(ve)
+        }
     except Exception as e:
+        print(f"Error: {e}")
         return {
             'statusCode': 500,
-            'body': json.dumps(f"Error: {str(e)}")
+            'body': json.dumps({'error': f"Error retrieving bucket data for {bucket_name}. {str(e)}"})
         }

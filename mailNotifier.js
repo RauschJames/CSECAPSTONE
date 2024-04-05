@@ -122,6 +122,20 @@ Notifier.prototype.scan = function (callback, subject, text) {
                         tempString += mail.text[i];
                     }
                 }
+                let date = mail.date;
+                let currentDate = new Date();
+                let difference = currentDate - date;
+                let fiveMinutesInMilliseconds = 5 * 60 * 1000;
+
+                if (difference > fiveMinutesInMilliseconds) {
+                    self.imap.addFlags(uid, ['\\Seen'], function (err) {
+                        if (err) {
+                            console.log(err);
+                        } else {
+                            console.log("Marked as read!")
+                        }
+                    });
+                }
 
                 if(mail.subject === subject && tempString === text) {
                     isValid = true;
