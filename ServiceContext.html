@@ -19,7 +19,6 @@
         iframe {
             transition: transform 0.2s; /* Animation */
         }
-        /* Smaller icons with a buffer */
         .tile {
             cursor: pointer;
             transition: transform 0.2s; /* Animation for scaling */
@@ -27,9 +26,8 @@
         .tile iframe {
             width: 100px; /* Smaller width */
             height: 75px; /* Smaller height */
-            border: 1px solid #ddd; 
+            border: 1px solid #ddd;
         }
-        /* Style for the popup */
         .popup {
             display: none;
             position: fixed;
@@ -58,8 +56,8 @@
     <button onclick="window.history.back();">Back to Dashboard</button>
     <div id="content-area"></div>
     
-    <div class="overlay" onclick="closePopup()"></div> <!-- Overlay for popup -->
-    <div class="popup" id="popup"></div> <!-- Popup container -->
+    <div class="overlay" onclick="closePopup()"></div>
+    <div class="popup" id="popup"></div>
 
     <script>
         function fetchBucketData(bucketData) {
@@ -67,7 +65,7 @@
                 .then(response => response.json())
                 .then(data => {
                     data = JSON.parse(data.body);
-                    displayContents(data) 
+                    displayContents(data);
                 })
                 .catch(error => console.error('Error:', error));
         }
@@ -78,7 +76,6 @@
             data.forEach(item => {
                 const tile = document.createElement('div');
                 tile.classList.add('tile');
-
                  
                 tile.style.border = '1px solid #ccc'; 
                 tile.style.padding = '10px'; 
@@ -86,7 +83,6 @@
 
                 const objectTag = document.createElement('object');
                 objectTag.setAttribute('data', item.url);
-                console.log(item.contentType);
                 objectTag.setAttribute('type', item.contentType);
     
                 objectTag.setAttribute('width', '1200'); 
@@ -94,7 +90,19 @@
 
                 objectTag.innerHTML = 'Your browser does not support displaying this object.';
 
+                const downloadBtn = document.createElement('button');
+                downloadBtn.textContent = 'Download';
+                downloadBtn.onclick = function() {
+                    const a = document.createElement('a');
+                    a.href = item.url;
+                    a.download = ''; 
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                };
+
                 tile.appendChild(objectTag);
+                tile.appendChild(downloadBtn); // Append the download button to each tile
                 contentArea.appendChild(tile);
             });
         }
@@ -102,7 +110,7 @@
         function showPopup(itemSrc) {
             const popup = document.getElementById('popup');
             const overlay = document.querySelector('.overlay');
-            popup.innerHTML = `<iframe src="${itemSrc}" width="600" height="400"></iframe>`; // Larger size in popup
+            popup.innerHTML = `<iframe src="${itemSrc}" width="600" height="400"></iframe>`;
             popup.style.display = 'block';
             overlay.style.display = 'block';
         }
@@ -112,7 +120,7 @@
             const overlay = document.querySelector('.overlay');
             popup.style.display = 'none';
             overlay.style.display = 'none';
-            popup.innerHTML = ''; // Clear the popup content
+            popup.innerHTML = '';
         }
 
         function getBucketDataForService() {
@@ -127,8 +135,7 @@
         }
         getBucketDataForService();
         
-        document.querySelector('.overlay').addEventListener('click', closePopup); // Close popup when overlay is clicked
+        document.querySelector('.overlay').addEventListener('click', closePopup);
     </script>
 </body>
 </html>
-
