@@ -128,11 +128,11 @@ app.post('/login', async (req, res) => {
     });
 
     const query = `
-        SELECT password, role_name
+        SELECT password, role_name, company_email
         FROM user_accounts
         WHERE account_id = ?
     `;
-
+    
     connection.query(query, [account_id], (err, results) => {
         if (err) {
             console.error(err);
@@ -147,6 +147,7 @@ app.post('/login', async (req, res) => {
                 if(isMatch) {
                     req.session.account_id = account_id;
                     req.session.role_name = results[0].role_name;
+                    req.session.company_email = results[0].company_email;
                     res.redirect('/index');
                 }
                 else {
@@ -208,12 +209,13 @@ app.get('/getSessionData', (req, res) => {
     });
     
     const query = `
-        SELECT account_id, role_name
+        SELECT account_id, role_name, company_email
         FROM   user_accounts
+        WHERE  company_email = ?
         ORDER BY account_id = ? DESC;
     `;
-
-    connection.query(query, [req.session.account_id], (err, results) => {
+    
+    connection.query(query, [req.session.company_email, req.session.account_id], (err, results) => {
         if (err) {
             console.error(err);
             res.status(500).send('Server error: ' + err.message);
