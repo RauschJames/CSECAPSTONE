@@ -68,12 +68,16 @@
 <body>
     <h1>Server Contents</h1>
     <button class="toolbar-button" onclick="window.history.back();">Back to Dashboard</button>
+    <button class = "toolbar-button" id="download">Download All Data</button>
     <div id="content-area"></div>
     
     <div class="overlay" onclick="closePopup()"></div>
     <div class="popup" id="popup"></div>
 
     <script>
+        
+        var bucketDataHolder = null;
+
         function fetchBucketData(bucketData) {
             fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/getBucketData?bucket=${bucketData.bucket_name}&account=${bucketData.bucket_owner_id}&role=${bucketData.bucket_owner_role}`)
                 .then(response => response.json())
@@ -103,10 +107,11 @@
                 objectTag.setAttribute('height', '700');
 
                 objectTag.innerHTML = 'Your browser does not support displaying this object.';
-
+                
                 const downloadBtn = document.createElement('button');
                     //downloadBtn.textContent = 'Download';
-                    downloadBtn.innerHTML = '<i class="fas fa-download"></i>';
+                    downloadBtn.classList.add('toolbar-button');
+                    downloadBtn.innerHTML = 'Display In New Window';
                     downloadBtn.onclick = function() {
                         const a = document.createElement('a');
                         a.href = item.url;
@@ -119,6 +124,13 @@
                 tile.appendChild(objectTag);
                 tile.appendChild(downloadBtn); // Append the download button to each tile
                 contentArea.appendChild(tile);
+            });
+        }
+
+        function downloadUrl(data) {
+            
+            data.forEach(item => {
+                window.open(item.url, '_blank');
             });
         }
         
@@ -143,11 +155,34 @@
                 url: '/getBucketData',
                 method: 'GET',
             }).done(function(response) {
+                bucketDataHolder = response;
+                console.log(bucketDataHolder);
                 fetchBucketData(response);
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 console.error('Error:', textStatus, errorThrown);
             });
         }
+        
+        document.getElementById('download').addEventListener('click', function() {
+            if(bucketDataHolder != null) {
+                fetchBucketDataForDownload(bucketDataHolder);
+            }
+        });
+
+        function fetchBucketDataForDownload(bucketData) {
+            
+            fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/DownloadData?bucket=${bucketData.bucket_name}&account=${bucketData.bucket_owner_id}&role=${bucketData.bucket_owner_role}`, {
+                    method: 'OPTIONS'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    data = JSON.parse(data.body);
+                    downloadUrl(data);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        
         getBucketDataForService();
         
         document.querySelector('.overlay').addEventListener('click', closePopup);
