@@ -88,7 +88,6 @@
         <div>Server Contents</div>
         <div>
             <button class="toolbar-button" onclick="window.history.back();">Back to Dashboard</button>
-            <button class = "toolbar-button" id="download">Download All Data</button>
         </div>
     </div>
     
@@ -129,29 +128,49 @@
 
                 objectTag.innerHTML = 'Your browser does not support displaying this object.';
                 
+                const displayBtn = document.createElement('button');
+                    
+                displayBtn.classList.add('toolbar-button');
+                displayBtn.innerHTML = 'Display In New Window';
+                displayBtn.onclick = function() {
+                    const a = document.createElement('a');
+                    a.href = item.url;
+                    a.download = ''; 
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                };
+
                 const downloadBtn = document.createElement('button');
-                    //downloadBtn.textContent = 'Download';
-                    downloadBtn.classList.add('toolbar-button');
-                    downloadBtn.innerHTML = 'Display In New Window';
-                    downloadBtn.onclick = function() {
-                        const a = document.createElement('a');
-                        a.href = item.url;
-                        a.download = ''; 
-                        document.body.appendChild(a);
-                        a.click();
-                        document.body.removeChild(a);
+                downloadBtn.classList.add('toolbar-button');
+                downloadBtn.innerHTML = 'Download';
+
+                downloadBtn.onclick = async function() {
+                    var downloadData = null;
+                    
+                    if(bucketDataHolder != null) {
+                        downloadData = await fetchBucketDataForDownload(bucketDataHolder, item.key);
+                        console.log(downloadData);
+                    }
+
+                    if(downloadData != null) {
+                        
+                        downloadData.forEach((item2, index) => {
+                            const downloadLink = document.createElement('a');
+                            downloadLink.href = item2.url;
+                            downloadLink.download = `item_${index + 1}.bin`; 
+
+                            document.body.appendChild(downloadLink);
+                            downloadLink.click();
+                            document.body.removeChild(downloadLink);
+                        });
+                    }
                 };
 
                 tile.appendChild(objectTag);
-                tile.appendChild(downloadBtn); // Append the download button to each tile
+                tile.appendChild(displayBtn);
+                tile.appendChild(downloadBtn); 
                 contentArea.appendChild(tile);
-            });
-        }
-
-        function downloadUrl(data) {
-            
-            data.forEach(item => {
-                window.open(item.url, '_blank');
             });
         }
         
@@ -177,30 +196,26 @@
                 method: 'GET',
             }).done(function(response) {
                 bucketDataHolder = response;
-                console.log(bucketDataHolder);
                 fetchBucketData(response);
             }).fail(function(jqXHR, textStatus, errorThrown) {
                 console.error('Error:', textStatus, errorThrown);
             });
         }
-        
-        document.getElementById('download').addEventListener('click', function() {
-            if(bucketDataHolder != null) {
-                fetchBucketDataForDownload(bucketDataHolder);
-            }
-        });
+    
+        function fetchBucketDataForDownload(bucketData, key) {
 
-        function fetchBucketDataForDownload(bucketData) {
-            
-            fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/DownloadData?bucket=${bucketData.bucket_name}&account=${bucketData.bucket_owner_id}&role=${bucketData.bucket_owner_role}`, {
+            let returnUrl = fetch(`https://kyr5dc3n5f.execute-api.us-west-2.amazonaws.com/test/DownloadData?bucket=${bucketData.bucket_name}&bucket_key=${key}&account=${bucketData.bucket_owner_id}&role=${bucketData.bucket_owner_role}`, {
                     method: 'OPTIONS'
                 })
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data);
                     data = JSON.parse(data.body);
-                    downloadUrl(data);
+                    return data;
                 })
                 .catch(error => console.error('Error:', error));
+            
+            return returnUrl;
         }
 
         
