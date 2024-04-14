@@ -1,0 +1,43 @@
+<-- James Rausch -->
+import { getByText, getByAltText, getByRole } from '@testing-library/dom';
+import '@testing-library/jest-dom/extend-expect';
+
+// Helper function to render the HTML content of the Getting Started guide
+function renderGetStartedPage() {
+  document.body.innerHTML = `
+    <div class="getStarted-container">
+        <h1>Getting Started with Our Service</h1>
+        <button onclick="window.history.back()" class="back-button">Back to the Login Page</button>
+    </div>
+  `;
+}
+
+// Test suite for the Getting Started page
+describe('Getting Started Page', () => {
+  // Test to check if all step descriptions and images are rendered
+  test('renders all steps with descriptions and images', () => {
+    renderGetStartedPage();
+    const steps = document.querySelectorAll('.step');
+    expect(steps.length).toBe(10); // expecting 10 steps
+    steps.forEach((step, index) => {
+      expect(getByAltText(step, `Step ${index + 1} Image`)).toBeInTheDocument();
+      expect(step.querySelector('.step-description')).toBeInTheDocument();
+    });
+  });
+
+  // Test for the back button functionality
+  test('back button should take user back to the previous page', () => {
+    renderGetStartedPage();
+    const backButton = getByRole(document.body, 'button', {name: 'Back to the Login Page'});
+    expect(backButton).toBeInTheDocument();
+    backButton.click(); // Note: actual navigation won't happen in Jest environment
+    // You would need to mock or spy on window.history.back() to test its call
+  });
+
+  test('step descriptions contain specific instructions', () => {
+    renderGetStartedPage();
+    expect(getByText(document.body, 'Go to your Amazon Web Services Console Home. Once there, navigate to IAM/Search up IAM.')).toBeInTheDocument();
+    expect(getByText(document.body, 'Create a meaningful name for the role and make sure you remember it/write it down somewhere.')).toBeInTheDocument();
+  });
+});
+
