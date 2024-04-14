@@ -1,0 +1,74 @@
+<-- James Rausch -->
+import { getByPlaceholderText, getByText, getByRole, fireEvent } from '@testing-library/dom';
+import '@testing-library/jest-dom/extend-expect';
+
+// Helper function to render the HTML content of the login form
+function renderLoginForm() {
+  document.body.innerHTML = `
+    <div class="login-container">
+      <h1>Welcome</h1>
+      <form class="login-form" action="/login" method="POST">
+        <input type="text" name="account_id" placeholder="Account ID" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit" class="login-button">LOGIN</button>
+      </form>    
+      <div class="signup">
+        Don't have an account? <a href="/register">Sign Up</a>
+      </div>
+      <div class="signup">
+        New user? <a href="/getStarted">Get Started Here</a>
+      </div>
+    </div>
+  `;
+}
+
+// Test suite for the login page
+describe('Login Page', () => {
+  // Test to check if all elements are rendered
+  test('renders all form inputs and the login button', () => {
+    renderLoginForm();
+    expect(getByPlaceholderText(document.body, 'Account ID')).toBeInTheDocument();
+    expect(getByPlaceholderText(document.body, 'Password')).toBeInTheDocument();
+    expect(getByText(document.body, 'LOGIN')).toBeInTheDocument();
+  });
+
+  // Test form submission attributes
+  test('login form uses POST method and submits to /login', () => {
+    renderLoginForm();
+    const form = document.querySelector('.login-form');
+    expect(form).toHaveAttribute('action', '/login');
+    expect(form).toHaveAttribute('method', 'POST');
+  });
+
+  // Test for registration link presence
+  test('contains link to registration page', () => {
+    renderLoginForm();
+    const registerLink = getByText(document.body, 'Sign Up');
+    expect(registerLink).toHaveAttribute('href', '/register');
+  });
+
+  // Test for get started link presence
+  test('contains link for new users to get started', () => {
+    renderLoginForm();
+    const getStartedLink = getByText(document.body, 'Get Started Here');
+    expect(getStartedLink).toHaveAttribute('href', '/getStarted');
+  });
+
+  // Test for required input fields
+  test('account ID and password inputs are required', () => {
+    renderLoginForm();
+    expect(getByPlaceholderText(document.body, 'Account ID')).toBeRequired();
+    expect(getByPlaceholderText(document.body, 'Password')).toBeRequired();
+  });
+
+  // Test input field interactions
+  test('allows user to enter account ID and password', () => {
+    renderLoginForm();
+    const accountInput = getByPlaceholderText(document.body, 'Account ID');
+    const passwordInput = getByPlaceholderText(document.body, 'Password');
+    fireEvent.change(accountInput, { target: { value: 'user123' } });
+    fireEvent.change(passwordInput, { target: { value: 'password' } });
+    expect(accountInput.value).toBe('user123');
+    expect(passwordInput.value).toBe('password');
+  });
+});
