@@ -1,0 +1,75 @@
+<-- James Rausch -->
+import { getByPlaceholderText, getByText, fireEvent } from '@testing-library/dom';
+import '@testing-library/jest-dom/extend-expect';
+import fetchMock from 'jest-fetch-mock';
+
+fetchMock.enableMocks();
+
+// Helper function to render the HTML content of the registration form
+function renderRegistrationForm() {
+  document.body.innerHTML = `
+    <div class="register-container">
+      <h1>Register</h1>
+      <form class="register-form" action="/submit-form" method="POST">
+        <input type="text" id="account_id" name="account_id" placeholder="Account ID" required>
+        <input type="text" id="company_email" name="company_email" placeholder="Company Email">
+        <button type="button" class="toolbar-button" id="verify-email" onclick="verifyEmail()">Verify Email</button>
+        <input type="password" id="password" name="password" placeholder="Password" required>
+        <input type="password" id="passwordAgain" name="passwordAgain" placeholder="Confirm Password" required>
+        <input type="text" id="role" name="role" placeholder="AWS Role Name" required>
+        <button type="submit" class="register-button" id="register" style="display: none;">Register</button>
+      </form>
+      <div class="account-exists"><a href="/">Back to Login Page</a></div>
+    </div>
+  `;
+  // Mock the verifyEmail and getMailer functions or inject scripts here
+}
+
+// Mock functions
+global.verifyEmail = jest.fn();
+global.getMailer = jest.fn();
+
+describe('Registration Page', () => {
+  beforeEach(() => {
+    fetch.resetMocks();
+    renderRegistrationForm();
+  });
+
+  test('renders all form inputs and verify email button', () => {
+    expect(getByPlaceholderText(document.body, 'Account ID')).toBeInTheDocument();
+    expect(getByPlaceholderText(document.body, 'Company Email')).toBeInTheDocument();
+    expect(getByPlaceholderText(document.body, 'Password')).toBeInTheDocument();
+    expect(getByPlaceholderText(document.body, 'Confirm Password')).toBeInTheDocument();
+    expect(getByPlaceholderText(document.body, 'AWS Role Name')).toBeInTheDocument();
+    expect(getByText(document.body, 'Verify Email')).toBeInTheDocument();
+  });
+
+  test('verify email button triggers email validation', () => {
+    const verifyButton = getByText(document.body, 'Verify Email');
+    fireEvent.click(verifyButton);
+    expect(global.verifyEmail).toHaveBeenCalled();
+  });
+
+  test('email verification enables register button on valid email', async () => {
+    const emailInput = getByPlaceholderText(document.body, 'Company Email');
+    fireEvent.input(emailInput, { target: { value: 'test@example.com' } });
+
+    fetch.mockResponseOnce(JSON.stringify({ isValid: true }));
+    const verifyButton = getByText(document.body, 'Verify Email');
+    fireEvent.click(verifyButton);
+
+    await new Promise(process.nextTick); // simulate next tick for promises to resolve
+    const registerButton = document.getElementById('register');
+    expect(registerButton.style.display).toBe('inline-block');
+    expect(getByText(document.body, 'Email Verified')).toBeInTheDocument();
+  });
+
+  test('shows error message on invalid email', async () => {
+    fetch.mockResponseOnce(JSON.stringify({ isValid: false }));
+    const verifyButton = getByText(document.body, 'Verify Email');
+    fireEvent.click(verifyButton);
+
+    await new Promise(process.nextTick); // simulate next tick for promises to resolve
+    expect(getByText(document.body, 'Invalid Email, try again')).toBeInTheDocument();
+  });
+});
